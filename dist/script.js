@@ -1,13 +1,13 @@
 "use strict";
-const todoInput = document.getElementById('todo-input');
-const todoForm = document.getElementById('todo-form');
-const todoList = document.getElementById('todo-list');
-const doneList = document.getElementById('done-list');
+const todoInput = document.getElementById("todo-input");
+const todoForm = document.getElementById("todo-form");
+const todoList = document.getElementById("todo-list");
+const doneList = document.getElementById("done-list");
 let todos = [];
 let doneTasks = [];
 const renderTasks = () => {
-    todoList.innerHTML = '';
-    doneList.innerHTML = '';
+    todoList.innerHTML = "";
+    doneList.innerHTML = "";
     todos.forEach((todo) => {
         const li = createTodoElement(todo, false);
         todoList.appendChild(li);
@@ -23,9 +23,9 @@ const getTodoText = () => {
 const addTodo = (text) => {
     todos.push({
         id: todos.length + 1,
-        text: text
+        text: text,
     });
-    todoInput.value = '';
+    todoInput.value = "";
     renderTasks();
 };
 const completeTodo = (todo) => {
@@ -38,20 +38,20 @@ const deleteTodo = (todo) => {
     renderTasks();
 };
 const createTodoElement = (todo, isDone) => {
-    const li = document.createElement('li');
-    li.classList.add('render-container__item');
+    const li = document.createElement("li");
+    li.classList.add("render-container__item");
     li.textContent = todo.text;
-    const button = document.createElement('button');
-    button.classList.add('render-container__item-button');
+    const button = document.createElement("button");
+    button.classList.add("render-container__item-button");
     if (isDone) {
-        button.textContent = '삭제';
+        button.textContent = "삭제";
         button.style.backgroundColor = "#dc3545";
     }
     else {
-        button.textContent = '완료';
+        button.textContent = "완료";
         button.style.backgroundColor = "#28a745";
     }
-    button.addEventListener('click', () => {
+    button.addEventListener("click", () => {
         if (isDone) {
             deleteTodo(todo);
         }
@@ -62,7 +62,7 @@ const createTodoElement = (todo, isDone) => {
     li.appendChild(button);
     return li;
 };
-todoForm.addEventListener('submit', (e) => {
+todoForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const text = getTodoText();
     if (text.length > 0) {
