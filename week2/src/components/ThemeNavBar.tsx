@@ -12,11 +12,9 @@ const ThemeToggleNavBar = () => {
   return (
     <nav className="theme-navbar">
       <button
-        style={{
-          backgroundColor: theme === "light" ? "#ffffff" : "#000000",
-          color: theme === "light" ? "#333333" : "#ffffff",
-        }}
-        className="theme-toggle-button"
+        className={`theme-toggle-button text-base rounded-md duration-300 ${
+          theme === "light" ? "bg-white text-black" : "bg-black text-white"
+        }`}
         onClick={toggleTheme}
       >
         {theme === "light" ? "라이트 모드 ☀️" : "다크 모드 🌙"}
