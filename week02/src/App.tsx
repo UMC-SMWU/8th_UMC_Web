@@ -1,24 +1,25 @@
-import './App.css'
-// 1. List 컴포넌트 import
-import List from './components/List'
+import { useState } from 'react';
 
 function App() {
-  const nickname = '우리'
-  const sweetPotato = '고구마'
-  const array = ['REACT', 'NEXT', 'VUE', 'SVELTE', 'ANGULAR', 'REACT-NATIVE']
+  const [count, setCount] = useState(0);
+  const handleIncreaseNumber = () => {
+    // 이전 상태 값을 인자로 전달하여 업데이트
+    setCount(prev => prev + 1);
+  };
+
+  const handleDecreaseNumber = () => {
+    setCount(prev => prev - 1);
+  };
+
   return (
-     <>
-      <strong className='school'>숙명여자대학교</strong>
-      <p style={{color: 'purple', fontWeight:'bold', fontSize:'3rem'}}>{nickname}/김선화</p>
-      <h1>{`${nickname}는 ${sweetPotato} 아이스크림을 좋아합니다.`}</h1>
-      <ul>
-        {array.map((a, idx) => (
-          // 2. <li key={idx}>{a}입니다.</li> List 컴포넌트 호출
-          <List key={idx} tech={a} />
-        ))}
-      </ul>
-     </>
-  )
+    <>
+      <h1>{count}</h1>
+      <div>
+        <button onClick={handleIncreaseNumber}>1 증가</button>
+        <button onClick={handleDecreaseNumber}>1 감소</button>
+      </div>
+    </>
+  );
 }
 
 export default App
