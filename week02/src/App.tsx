@@ -1,14 +1,10 @@
-import ButtonGroup from './components/ButtonGroup';
-import { useCount } from './context/CounterProvider';
+import './App.css';
+import Todo from './components/Todo';
 
 function App() {
-  // const context = useContext(CounterContext);
-  const { count } = useCount();
-
   return (
     <>
-      <h1>{count}</h1>
-      <ButtonGroup />
+      <Todo />
     </>
   );
 }
