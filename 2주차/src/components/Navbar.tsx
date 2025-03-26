@@ -11,6 +11,8 @@ export default function Navbar(): Element {
             'p-4 w-full flex justify-end',
             isLightMode ? 'bg-white' : 'bg-gray-800'
         )}>
+
+            
                 <ThemeToggleButton />
         </nav>
     );
