@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Movie, MovieResponse } from "../types/movie";
+import { Movie } from "../types/movie";
 import axios from "axios";
 import MovieCard from "../components/MovieCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useParams } from "react-router-dom";
+import { MovieResponse } from "../dto/MovieResponse";
 
 const MoviePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
