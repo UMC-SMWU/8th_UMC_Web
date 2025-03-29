@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { Movie } from "../types/movie"
+import { useNavigate } from "react-router-dom";
 
 interface MovieCardProps {
     movie: Movie;
+    category: string;
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, category }: MovieCardProps) {
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
     
     return (
         <div 
+            onClick={() => navigate(`/movies/${category}/${movie.id}`)} // 불필요한 페이지 새로고침 방지 위해 window.location.href 사용하지 않는다
             className="relative rounded-xl shadow-lg overflow-hidden 
             cursor-pointer w-44 transition-transform duration-500 hover:scale-105"
             onMouseEnter={() => setIsHovered(true)}
