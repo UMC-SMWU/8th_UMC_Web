@@ -5,6 +5,7 @@ import MovieCard from "../components/MovieCard";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import Pagination from "../components/Pagination";
 import { useParams } from "react-router-dom";
+import NotFound from "./not-found";
 
 const MoviePage = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -49,9 +50,7 @@ const MoviePage = () => {
 
     if (isError) {
         return (
-            <div>
-                <span className="text-red-500 text-2xl">에러 발생</span>
-            </div>
+            <NotFound />
         )
     }
 

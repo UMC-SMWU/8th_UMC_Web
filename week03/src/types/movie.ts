@@ -20,4 +20,39 @@ export type MovieResponse = {
     results: Movie[],
     total_pages: number,
     total_results: number,
+};
+
+export type MovieDetail = {
+    id: number,
+    original_title: string,
+    overview: string,
+    poster_path: string,
+    backdrop_path: string,
+    release_date: string,
+    runtime: number,
+    tagline: string,
+    title: string,
+    vote_average: number,
+};
+
+export type MovieCast = {
+    id: number,
+    name: string,
+    original_name: string,
+    character: string,
+    profile_path: string,
 }
+
+export type MovieCrew = {
+    id: number,
+    credit_id: string,
+    name: string,
+    original_name: string,
+    job: string,
+};
+
+export type MovieCredits = {
+    id: number,
+    cast: MovieCast[],
+    crew: MovieCrew[],
+};
