@@ -7,9 +7,9 @@ interface CrewCardProps {
 export default function CrewCard({ crew }: CrewCardProps) { 
     return (
         <>
-            <div key={crew.id}>
-                <div>{`이름 : ${crew.name}`}</div>
-                <div>{`배역 : ${crew.job}`}</div>
+            <div className="flex flex-col justify-center items-center" key={crew.id}>
+                <div className="">{crew.name}</div>
+                <div className="text-sm text-gray-400">{crew.job}</div>
             </div>
         </>
     )

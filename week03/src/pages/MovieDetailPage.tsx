@@ -6,13 +6,15 @@ import { LoadingSpinner } from "../components/LoadingSpinner";
 import NotFound from "./not-found";
 import CastCard from "../components/CastCard";
 import CrewCard from "../components/CrewCard";
+import MovieDetailCompo from "../components/MovieDetailCompo";
 
 const MovieDetailPage = () => {
-    const [movie, setMovie] = useState<MovieDetail | null>();
+    const [movie, setMovie] = useState<MovieDetail>();
     const [cast, setCast] = useState<MovieCast[]>([]);
     const [crew, setCrew] = useState<MovieCrew[]>([]);
     const [isPending, setIsPending] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [isCastVisible, setIsCastVisible] = useState(true);
 
     const { movieId } = useParams<{
         movieId: string;
@@ -75,31 +77,42 @@ const MovieDetailPage = () => {
 
     return (
         <>
+        <div className="bg-gradient-to-b from-black to-gray-800 text-white">
             {isPending && (
                 <div className="flex items-center justify-center h-dvh">
                     <LoadingSpinner />    
                 </div>
             )}
-            <div>{`제목 : ${movie?.title}`}</div>
-            <div>{`제목 : ${movie?.original_title}`}</div>
-            <div>{`별점 : ${movie?.vote_average}`}</div>
-            <div>{`개봉년도 : ${movie?.release_date}`}</div>
-            <div>{`러닝타임 : ${movie?.runtime}`}</div>
-            <div>{`tagline : ${movie?.tagline}`}</div>
-            <div>{`overview : ${movie?.overview}`}</div>
-            <img src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`} alt={`${movie?.title} 영화의 포스터`}/>
-            <div>출연</div>
-            <div>
+            <div className="relative">
+                <MovieDetailCompo movie={movie} />
+            </div>
+
+            {/* <div className="pt-5 pl-10 text-2xl font-bold">출연</div>
+            <div className="p-10 grid gap-4 grid-cols-2 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
                 {cast?.map((cast) => (
                     <CastCard key={cast.id} cast={cast} />
                 ))}
+            </div> */}
+            <div
+                className="pt-5 pl-10 text-2xl font-bold cursor-pointer"
+                onClick={() => setIsCastVisible(!isCastVisible)} // 클릭 시 토글
+            >
+                {isCastVisible ? "▼ 출연" : "▶ 출연"}
             </div>
-            <div>제작</div>
-            <div>
+            {isCastVisible && ( // 토글 상태에 따라 렌더링
+                <div className="p-10 grid gap-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
+                    {cast?.map((cast) => (
+                        <CastCard key={cast.id} cast={cast} />
+                    ))}
+                </div>
+            )}
+            <div className="pt-5 pl-10 text-2xl font-bold">제작</div>
+            <div className="grid pt-5 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-9 xl:grid-cols-10 gap-4 p-10">
                 {crew?.map((crew) => (
                     <CrewCard key={crew.credit_id} crew={crew} />
                 ))}
             </div>
+        </div>
         </>
     )
 };

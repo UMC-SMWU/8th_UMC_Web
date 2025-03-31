@@ -18,7 +18,7 @@ export default function Pagination({ page, setPage, totalPage }: PageProps) {
             >
                 {`<`}
             </button>
-            <span>{`${page} 페이지`}</span>
+            <span>{`${page} / ${totalPage} 페이지`}</span>
             <button 
                 className="bg-[#97cdff] text-white rounded-lg p-6 py-3
                 shadow-md cursor-pointer hover:bg-[#97cdff95] transition-all duration-300
