@@ -1,44 +1,54 @@
-## 💻 UMC Web Study ✏️
+# React + TypeScript + Vite
 
-### 📥 프로젝트 시작하기
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-- 자신이 원하는 위치에 자신의 파트 레파지토리 중 자신의 깃허브 닉네임 branch를 클론해줍니다
-    
-    🖥️ `git clone -b {브랜치이름} —-single-branch {저장소 url}`
-    
-    ps. 작업 도중 생길 문제를 대비해서 저희는 본인의 브랜치만 클론 받는 방식으로 진행하려 합니다. 하지만 나중에 프로젝트를 진행할 때는 main branch를 클론 받아, 특정 branch에서 작업하는 방식으로 진행이 될 것입니다. 이때에는 반드시 main branch가 아닌 자신이 작업하기로한 branch에서만 작업하셔야 합니다‼️
-    
-- 자신의 깃허브 닉네임 폴더 내부를 경로로 미션 진행하시면 됩니다
+Currently, two official plugins are available:
 
-### 📌 commit 하기
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- 파트 별로 작업을 끝냈거나 더 작은 단위로 작업을 끝낼 때마다 add 후에 commit을 해 주는 게 좋아요
-- 반드시 자신의 브랜치에서만 commit을 해주세요‼️
-- commit 형식
-    - [Feat]: 새로운 기능 추가
-    - [Fix]: 버그 수정
-    - [Docs]: 문서 수정
-    - [Style]: 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우
-    - [Refactor]: 코드 리펙토링
-    - [Test]: 테스트 코드, 리펙토링 테스트 코드 추가
-    - [Chore]: 빌드 업무 수정, 패키지 매니저 수정
-    
-    🖥️ `git add 자신이 수정한 파일명`
-    
-    🖥️ `git commit -m “[Feat(닉네임/이름)] ㅇㅇ기능 추가”`
-    
+## Expanding the ESLint configuration
 
-### 📤 Github 레파지토리에 적용하기
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-- 해당 주차의 강의를 듣거나 작업을 모두 끝냈다면, 프로젝트 변경 사항을 remote repository(github repository)에 push 합니다.
-    
-    🖥️ `git push origin 본인의 브랜치명(깃허브 닉네임)`
-    
-- push를 완료했다면 스터디 repository에서 pull request를 진행합니다
-    
-    (자신의 브랜치에 push 후에 github 페이지 들어오면 아마 뜰거에요!)
-    
-- PR(Pull Request)시 메세지 제목은 다음과 같이 `[이름/닉네임] ㅇ주차 정리내용 제출.` 라고 적은 후 `create pull request` 버튼을 눌러주세요
-- PR : `base: [master]` <- `compare: [본인 github 아이디]`
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+})
+```
 
-❤️ 본인의 폴더안에 있는 [README.md](http://README.md) 파일은 자유롭게 사용해주세요🙂
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    'react-x': reactX,
+    'react-dom': reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs['recommended-typescript'].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+})
+```
