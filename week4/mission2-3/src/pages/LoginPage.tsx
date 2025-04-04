@@ -1,8 +1,16 @@
-import React from "react";
 import useForm from "../hooks/useForm";
 import { LoginForm, validateLogin } from "../utils/validate";
+import { postLogin } from "../api/AuthService";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { LOCAL_STORAGE_KEY } from "../constants/key";
 
 export default function LoginPage() {
+  const { setItem: setAccessToken } = useLocalStorage(
+    LOCAL_STORAGE_KEY.accessToken
+  );
+  const { setItem: setRefreshToken } = useLocalStorage(
+    LOCAL_STORAGE_KEY.refreshToken
+  );
   const { values, errors, touched, getInputProps } = useForm<LoginForm>({
     initialValue: {
       email: "",
@@ -11,8 +19,18 @@ export default function LoginPage() {
     validate: validateLogin,
   });
 
-  const handleSubmit = () => {};
-  const isDiabled =
+  const handleSubmit = async () => {
+    try {
+      const response = await postLogin(values);
+      setAccessToken(response.data.accessToken);
+      setRefreshToken(response.data.refreshToken);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value.length === 0);
 
@@ -53,7 +71,7 @@ export default function LoginPage() {
           className="w-full bg-black text-white p-[10px] rounded-sm hover:bg-[#807bff] transition-colors duration-200 disabled:bg-[#ccc]"
           type="button"
           onClick={handleSubmit}
-          disabled={isDiabled}
+          disabled={isDisabled}
         >
           로그인
         </button>
