@@ -3,6 +3,11 @@ import { LoginForm, validateLogin } from "../utils/validate";
 import { postLogin } from "../api/AuthService";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
+import Header from "../components/Header";
+import InputField from "../components/InputField";
+import GoogleLoginButton from "../components/GoogleLoginButton";
+import SubmitButton from "../components/SubmitButton";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const { setItem: setAccessToken } = useLocalStorage(
@@ -34,47 +39,37 @@ export default function LoginPage() {
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value.length === 0);
 
+  const navigate = useNavigate();
+
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-4">
+    <div className="flex flex-col items-center justify-center h-full w-full gap-4">
+      <Header text="로그인" onClick={() => navigate(-1)} />
       <div className="flex flex-col gap-3">
-        <input
-          {...getInputProps("email")}
+        <GoogleLoginButton />
+        <div className="flex items-center justify-center w-[300px] text-gray-300 py-4">
+          <div className="w-full h-[1px] bg-gray-300" />
+          <p className="px-10">OR</p>
+          <div className="w-full h-[1px] bg-gray-300" />
+        </div>
+        <InputField
           type="email"
-          placeholder={"이메일"}
-          className={`border border-[#ccc] w-[300px] p-[10px]
-        focus:border-[#807bff] rounded-sm
-        ${
-          errors?.email && touched?.email
-            ? "border-red-500 bg-red-200"
-            : "border-gray-300"
-        }`}
+          placeholder="이메일을 입력해주세요!"
+          error={errors?.email}
+          touched={touched?.email}
+          inputProps={getInputProps("email")}
         />
-        {errors?.email && touched?.email && (
-          <span className="text-red-500 text-sm">{errors.email}</span>
-        )}
-        <input
-          {...getInputProps("password")}
-          type={"password"}
-          placeholder={"비밀번호"}
-          className={`border border-[#ccc] w-[300px] p-[10px]
-            focus:border-[#807bff] rounded-sm
-            ${
-              errors?.password && touched?.password
-                ? "border-red-500 bg-red-200"
-                : "border-gray-300"
-            }`}
+        <InputField
+          type="password"
+          placeholder="비밀번호를 입력해주세요!"
+          error={errors?.password}
+          touched={touched?.password}
+          inputProps={getInputProps("password")}
         />
-        {errors?.password && touched?.password && (
-          <span className="text-red-500 text-sm">{errors.password}</span>
-        )}
-        <button
-          className="w-full bg-black text-white p-[10px] rounded-sm hover:bg-[#807bff] transition-colors duration-200 disabled:bg-[#ccc]"
-          type="button"
+        <SubmitButton
+          text="로그인"
           onClick={handleSubmit}
           disabled={isDisabled}
-        >
-          로그인
-        </button>
+        />
       </div>
     </div>
   );

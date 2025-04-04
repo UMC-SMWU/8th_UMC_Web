@@ -10,7 +10,7 @@ function validateUser(data: LoginForm) {
   };
 
   if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
-    errors.email = "올바른 이메일 형식이 아닙니다.";
+    errors.email = "올바른 이메일 형식을 입력해주세요.";
   }
   if (!(data.password.length >= 8 && data.password.length <= 20)) {
     errors.password = "비밀번호는 8자 이상 20자 이하로 입력해야 합니다.";
