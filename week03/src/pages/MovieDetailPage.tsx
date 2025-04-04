@@ -1,75 +1,28 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { MovieCast, MovieCredits, MovieCrew, MovieDetail } from "../types/movie";
+import { MovieCredits, MovieDetail } from "../types/movie";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import NotFound from "./not-found";
 import CastCard from "../components/CastCard";
 import CrewCard from "../components/CrewCard";
 import MovieDetailCompo from "../components/MovieDetailCompo";
+import useCustomFetch from "../hooks/useCustomFetch";
 
 const MovieDetailPage = () => {
-    const [movie, setMovie] = useState<MovieDetail>();
-    const [cast, setCast] = useState<MovieCast[]>([]);
-    const [crew, setCrew] = useState<MovieCrew[]>([]);
-    const [isPending, setIsPending] = useState(false);
-    const [isError, setIsError] = useState(false);
     const [isCastVisible, setIsCastVisible] = useState(true);
 
     const { movieId } = useParams<{
         movieId: string;
     }>();
 
+    const url1 = `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`;
+    const url2 = `https://api.themoviedb.org/3/movie/${movieId}/credits?language=ko-KR`;
 
-    useEffect(() => {
-        const fetchDetail = async () => {
-            setIsPending(true); // 데이터 요청 시작 시 로딩 활성화
-            // 응답에 대한 타입 정의
-            try {
-                const { data } = await axios.get<MovieDetail>(
-                    `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${import.meta.env.VITE_MOVIE_API_KEY}`,
-                        },
-                    }
-                );
-                setMovie(data);
-            } catch{
-                setIsError(true);
-            } finally {
-                setIsPending(false); // 모든 구문에 공통으로 들어가야 할 사항
-            }
-        };
+    const { data: movie, isPending: isMoviePending, isError: isMovieError} = useCustomFetch<MovieDetail>(url1);
+    const { data: credits, isPending: isCreditPending, isError: isCreditError} = useCustomFetch<MovieCredits>(url2);
 
-        fetchDetail();
-    },[movieId]);
 
-    useEffect(() => {
-        const fetchCredit = async () => {
-            setIsPending(true);
-            try {
-                const { data } = await axios.get<MovieCredits>(
-                    `https://api.themoviedb.org/3/movie/${movieId}/credits?language=ko-KR`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${import.meta.env.VITE_MOVIE_API_KEY}`,
-                        },
-                    }
-                );
-                setCast(data.cast);
-                setCrew(data.crew);
-            } catch  {
-                setIsError(true);
-            } finally {
-                setIsPending(false);
-            }
-        };
-
-        fetchCredit();
-    },[movieId]);
-
-    if (isError) {
+    if (isMovieError || isCreditError) {
         return (
             <NotFound />
         )
@@ -78,7 +31,7 @@ const MovieDetailPage = () => {
     return (
         <>
         <div className="bg-gradient-to-b from-black to-gray-800 text-white">
-            {isPending && (
+            {( isMoviePending || isCreditPending) && (
                 <div className="flex items-center justify-center h-dvh">
                     <LoadingSpinner />    
                 </div>
@@ -101,14 +54,14 @@ const MovieDetailPage = () => {
             </div>
             {isCastVisible && ( // 토글 상태에 따라 렌더링
                 <div className="p-10 grid gap-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8">
-                    {cast?.map((cast) => (
+                    {credits?.cast.map((cast) => (
                         <CastCard key={cast.id} cast={cast} />
                     ))}
                 </div>
             )}
             <div className="pt-5 pl-10 text-2xl font-bold">제작</div>
             <div className="grid pt-5 sm:grid-cols-7 md:grid-cols-8 lg:grid-cols-9 xl:grid-cols-10 gap-4 p-10">
-                {crew?.map((crew) => (
+                {credits?.crew.map((crew) => (
                     <CrewCard key={crew.credit_id} crew={crew} />
                 ))}
             </div>
