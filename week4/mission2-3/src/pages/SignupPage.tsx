@@ -64,8 +64,13 @@ export default function SignupPage() {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordCheck, ...rest } = data;
-    const response = await postSignup(rest);
-    console.log(response);
+    try {
+      const response = await postSignup(rest);
+      console.log(response);
+      navigate("/login");
+    } catch (error) {
+      alert(`${error} 회원가입에 실패했습니다.`);
+    }
   };
 
   return (

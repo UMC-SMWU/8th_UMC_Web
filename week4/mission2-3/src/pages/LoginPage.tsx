@@ -10,6 +10,7 @@ import SubmitButton from "../components/SubmitButton";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const { setItem: setAccessToken } = useLocalStorage(
     LOCAL_STORAGE_KEY.accessToken
   );
@@ -30,6 +31,7 @@ export default function LoginPage() {
       setAccessToken(response.data.accessToken);
       setRefreshToken(response.data.refreshToken);
       console.log(response);
+      navigate("/mypage");
     } catch (error) {
       console.log(error);
     }
@@ -38,8 +40,6 @@ export default function LoginPage() {
   const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value.length === 0);
-
-  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full gap-4">

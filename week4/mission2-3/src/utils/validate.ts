@@ -12,8 +12,14 @@ function validateUser(data: LoginForm) {
   if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
     errors.email = "올바른 이메일 형식을 입력해주세요.";
   }
-  if (!(data.password.length >= 8 && data.password.length <= 20)) {
-    errors.password = "비밀번호는 8자 이상 20자 이하로 입력해야 합니다.";
+
+  switch (true) {
+    case data.email.length < 8:
+      errors.email = "이메일은 8자 이상이어야 합니다.";
+      break;
+    case data.email.length > 20:
+      errors.email = "이메일은 20자 이하이어야 합니다.";
+      break;
   }
 
   return errors;
