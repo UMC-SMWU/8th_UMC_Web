@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import useForm from "../hooks/useForm"
 import { UserSigninInformation, validateSignin } from "../utils/validate"
+import { postSignin } from "../apis/auth";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { LOCAL_STORAGE_KEY } from "../constants/key";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
   const { values, errors, touched, getInputProps } = useForm<UserSigninInformation>({
     initialValue: {
       email: "",
@@ -12,11 +16,19 @@ const LoginPage = () => {
     validate: validateSignin,
   });
 
-  const handleSubmit = () => {
-
+  const handleSubmit = async () => {
+    let response;
+    try {
+      response = await postSignin(values);
+      console.log('로그인 요청:', response);
+      setItem(response.data.accessToken);
+      navigate("/my");
+    } catch(e) {
+      window.alert(response?.data);
+    }
   };
 
-  // 오류가 하나라도 있거나, 입려값이 비어있으면 버튼을 비활성화
+  // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화
   const isDisabled = 
     Object.values(errors || {}).some((error) => error.length >0) || // 오류가 있으면 true
     Object.values(values).some((value) => value === ""); // 값이 비어있으면 true
