@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import GoogleLogo from "../assets/google-logo.png"; // 상대 경로에 맞게 조정
+import GoogleLogo from "../assets/google-logo.png"; 
 import useForm from "../hooks/useForm.ts";
 import { UserSigninInformation, validateSignin } from "../utils/validate.ts";
 
@@ -65,7 +65,6 @@ const LoginPage = () => {
                     <div className="flex-grow h-px bg-gray-600" />
                 </div>
 
-                {/* 이메일 & 비밀번호 입력창 */}
                 <div className="flex flex-col gap-3">
                     <input
                         {...getInputProps("email")}

@@ -9,7 +9,7 @@ const Navbar = () => {
         <nav className = "absolute right-8 top-8 space-x-4">
             <Link to = '/' className = {getLinkClass("/")}></Link>
             <Link to = '/login' className = {getLinkClass("/login")}>로그인</Link>
-            <Link to = '/signin' className = {getLinkClass("/signin")}>회원가입</Link>
+            <Link to = '/signup' className = {getLinkClass("/signup")}>회원가입</Link>
         </nav>
     );
 };
