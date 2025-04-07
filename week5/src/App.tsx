@@ -12,6 +12,7 @@ import SignupPage from "./pages/SignupPage";
 import MyPage from "./pages/MyPage";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedLayout from "./layout/ProtectedLayout";
+import GoogleLoginRedirectPage from "./pages/GoogleLoginRedirectPage";
 
 // 인증 없이 접근 가능한 라우트
 const publicRoutes: RouteObject[] = [
@@ -31,6 +32,10 @@ const publicRoutes: RouteObject[] = [
       {
         path: "signup",
         element: <SignupPage />,
+      },
+      {
+        path: "v1/auth/google/callback",
+        element: <GoogleLoginRedirectPage />,
       },
     ],
   },
