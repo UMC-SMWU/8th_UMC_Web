@@ -54,6 +54,7 @@ const SignupPage = () => {
     const { passwordCheck, ...rest} = data; // pwCheck 제외한 나머지 전송
 
     const response = await postSignup(rest);
+    navigate("/login");
     console.log('제출 요청:', response);
   };
 
