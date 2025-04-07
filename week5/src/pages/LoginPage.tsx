@@ -1,22 +1,16 @@
 import useForm from "../hooks/useForm";
 import { LoginForm, validateLogin } from "../utils/validate";
-import { postLogin } from "../api/AuthService";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { LOCAL_STORAGE_KEY } from "../constants/key";
 import Header from "../components/Header";
 import InputField from "../components/InputField";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import SubmitButton from "../components/SubmitButton";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
+import { useEffect } from "react";
 
 export default function LoginPage() {
+  const { accessToken, login } = useAuthContext();
   const navigate = useNavigate();
-  const { setItem: setAccessToken } = useLocalStorage(
-    LOCAL_STORAGE_KEY.accessToken
-  );
-  const { setItem: setRefreshToken } = useLocalStorage(
-    LOCAL_STORAGE_KEY.refreshToken
-  );
   const { values, errors, touched, getInputProps } = useForm<LoginForm>({
     initialValue: {
       email: "",
@@ -26,20 +20,18 @@ export default function LoginPage() {
   });
 
   const handleSubmit = async () => {
-    try {
-      const response = await postLogin(values);
-      setAccessToken(response.data.accessToken);
-      setRefreshToken(response.data.refreshToken);
-      console.log(response);
-      navigate("/mypage");
-    } catch (error) {
-      console.log(error);
-    }
+    await login(values);
   };
 
   const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value.length === 0);
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/");
+    }
+  }, [navigate, accessToken]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full gap-4">
