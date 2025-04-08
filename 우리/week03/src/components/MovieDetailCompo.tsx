@@ -1,7 +1,7 @@
 import { MovieDetail } from "../types/movie";
 
 interface MovieDetailProps {
-    movie?: MovieDetail;
+    movie?: MovieDetail | null;
 }
 
 export default function MovieDetailCompo({ movie }: MovieDetailProps) {
