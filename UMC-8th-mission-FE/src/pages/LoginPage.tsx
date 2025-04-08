@@ -4,6 +4,7 @@ import { UserSigninInformation, validateSignin } from "../utils/validate"
 import { postSignin } from "../apis/auth";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
+import { BsArrowLeftShort } from "react-icons/bs";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -37,9 +38,8 @@ const LoginPage = () => {
     <div className="flex flex-col items-center justify-center h-full gap-4 ">
       <div className="flex flex-col gap-3">
         <div className="relative flex items-center mb-6">
-          <img 
-            className="absolute w-5 h-5"
-            src="src/assets/arrow.svg"
+          <BsArrowLeftShort 
+            className="absolute w-8 h-8 text-gray-100"
             onClick={() => {navigate(-1)}}
             style={{ cursor: "pointer" }}
           />
@@ -49,7 +49,7 @@ const LoginPage = () => {
         </div>
         <button 
           type="button" 
-          className="relative flex items-center w-full py-3 border border-[#2c4629] p-[10px] rounded-sm text-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+          className="relative flex items-center w-full py-3 border border-[#96c0f0] p-[10px] rounded-sm text-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
         >
           <img src="src/assets/google.svg" alt="구글 아이콘" className="w-6 h-6 inline-block mr-2 absolute " />
           <div className="mx-auto">구글 로그인</div>
@@ -61,7 +61,7 @@ const LoginPage = () => {
         </div>
         <input 
           {...getInputProps("email")}
-          className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+          className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#96c0f0] focus:outline-none
           ${errors?.email && touched?.email ? "border-red-500 bg-red-200" : "border-gray-300"}`}
           type="email"
           placeholder="이메일"
@@ -71,7 +71,7 @@ const LoginPage = () => {
         )}
         <input 
           {...getInputProps("password")}
-          className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+          className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#96c0f0] focus:outline-none
             ${errors?.password && touched?.password ? "border-red-500 bg-red-200" : "border-gray-300"}`}
           type="password"
           placeholder="비밀번호"
@@ -83,7 +83,7 @@ const LoginPage = () => {
           type="button" 
           onClick={ handleSubmit } 
           disabled={ isDisabled } 
-          className="bg-[#2c4629] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#4a6d47]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
+          className="bg-[#96c0f0] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#96c0f0]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
         >
           로그인
         </button>

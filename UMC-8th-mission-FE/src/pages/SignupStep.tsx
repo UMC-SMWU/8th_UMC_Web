@@ -5,6 +5,7 @@ import { z } from "zod";
 import { postSignup } from "../apis/auth";
 import { useState } from "react";
 import { MdEmail, MdPerson } from "react-icons/md";
+import { BsArrowLeftShort } from "react-icons/bs";
 
 // 유효성 검사 스키마 정의
 const schema = z.object({
@@ -29,7 +30,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>;
 
 const SignupStep = () => {
-  const [step, setStep] = useState(3); // 현재 단계 (1: 이메일, 2: 비밀번호, 3: 이름)
+  const [step, setStep] = useState(1); // 현재 단계 (1: 이메일, 2: 비밀번호, 3: 이름)
   const [emailValue, setEmailValue] = useState(""); // 입력된 이메일 값
   const navigate = useNavigate();
 
@@ -62,12 +63,9 @@ const SignupStep = () => {
     <div className="flex flex-col items-center justify-center h-full gap-4">
       <div className="flex flex-col gap-3">
         <div className="relative flex items-center mb-4">
-          <img
-            className="absolute w-5 h-5"
-            src="src/assets/arrow.svg"
-            onClick={() => {
-              navigate(-1);
-            }}
+          <BsArrowLeftShort 
+            className="absolute w-8 h-8 text-gray-100"
+            onClick={() => {navigate(-1)}}
             style={{ cursor: "pointer" }}
           />
           <div className="mx-auto text-xl font-bold">회원가입</div>
@@ -78,7 +76,7 @@ const SignupStep = () => {
           <div className="flex flex-col gap-3">
             <input
               {...register("email")}
-              className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+              className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#96c0f0] focus:outline-none
               ${errors?.email ? "border-red-500 bg-red-200" : "border-gray-300"}`}
               type="email"
               placeholder="이메일"
@@ -95,7 +93,7 @@ const SignupStep = () => {
                 }
               }}
               disabled={!!errors.email}
-              className="bg-[#2c4629] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#4a6d47]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
+              className="bg-[#96c0f0] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#96c0f0]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
             >
               다음
             </button>
@@ -115,7 +113,7 @@ const SignupStep = () => {
             <div className="relative flex items-center justify-end">
               <input 
                 {...register("password")}
-                className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+                className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#96c0f0] focus:outline-none
                   ${errors?.password  ? "border-red-500 bg-red-200" : "border-gray-300"}`}
                 type={isShowPassword ? "text" : "password"}
                 placeholder="비밀번호"
@@ -132,7 +130,7 @@ const SignupStep = () => {
             <div className="relative flex items-center justify-end">
               <input 
                 {...register("passwordCheck")}
-                className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+                className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#96c0f0] focus:outline-none
                   ${errors?.passwordCheck  ? "border-red-500 bg-red-200" : "border-gray-300"}`}
                 type={isShowPassword ? "text" : "password"}
                 placeholder="비밀번호확인"
@@ -156,7 +154,7 @@ const SignupStep = () => {
                 }
               }}
               disabled={!!errors.password || !!errors.passwordCheck}
-              className="bg-[#2c4629] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#4a6d47]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
+              className="bg-[#96c0f0] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#96c0f0]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
             >
               다음
             </button>
@@ -171,7 +169,7 @@ const SignupStep = () => {
             </div>
             <input
               {...register("name")}
-              className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+              className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#96c0f0] focus:outline-none
                 ${errors?.name ? "border-red-500 bg-red-200" : "border-gray-300"}`}
               type="text"
               placeholder="이름"
@@ -183,7 +181,7 @@ const SignupStep = () => {
               type="button"
               onClick={handleSubmit(onSubmit)}
               disabled={isSubmitting}
-              className="bg-[#2c4629] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#4a6d47]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
+              className="bg-[#96c0f0] text-white w-full py-3 p-[10px] rounded-sm text-lg hover:bg-[#6c9ace]/80 transition-colors duration-200 cursor-pointer disabled:bg-gray-300"
             >
               회원가입 완료
             </button>
