@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import GoogleLogo from "../assets/google-logo.png"; 
 import useForm from "../hooks/useForm.ts";
 import { UserSigninInformation, validateSignin } from "../utils/validate.ts";
+import axios from "axios";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -19,14 +20,41 @@ const LoginPage = () => {
         },
         validate: validateSignin,
     });
+    const [errorMessage, setErrorMessage] = useState("");
     
-    const handleSubmit = () => {
-        console.log(values);
-    };
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post("http://localhost:8000/v1/auth/signin", {
+                email: values.email,
+                password: values.password,
+            });
+    
+            if (response.data.status) {
+                const { id, name, accessToken, refreshToken } = response.data.data;
+    
+                // 필요한 정보 저장
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken", refreshToken);
+                localStorage.setItem("userId", String(id));
+                localStorage.setItem("userName", name);
+                console.log("로그인 성공:", response.data);
 
+                 alert("로그인에 성공했습니다!");
+
+                // 홈으로 이동
+                navigate("/");
+            } else {
+                setErrorMessage("로그인에 실패했습니다.");
+            }
+        } catch (error: any) {
+            console.error("로그인 에러:", error);
+            setErrorMessage("이메일 또는 비밀번호가 잘못되었습니다.");
+        }
+    };
     const handleGoogleLogin = () => {
         alert("구글 로그인 실행 (추후 구현)");
     };
+    
 
     //오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화
     const isDisabled = 
@@ -96,6 +124,11 @@ const LoginPage = () => {
                     >
                         로그인
                     </button>
+                    {errorMessage && (
+                     <div className="text-red-400 text-sm text-center">{errorMessage}</div>
+                        )}
+                   
+
                 </div>
             </div>
         </div>

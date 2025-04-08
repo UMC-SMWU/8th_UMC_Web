@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import GoogleLogo from "../assets/google-logo.png";
 import profile from "../assets/profile.png";
 import { useState } from "react";
+import axios from "axios";
 
 const emailSchema = z.object({
   email: z.string().email({ message: "올바른 이메일 형식이 아닙니다." }),
@@ -53,17 +54,27 @@ const SignupPage = () => {
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (step === 1) {
       setStep(2);
     } else if (step === 2) {
       setStep(3);
     } else {
-      console.log("회원가입 완료:", {
-        email: getValues("email"),
-        password: getValues("password"),
-        name: getValues("name"),
-      });
+      try {
+        const signupData = {
+          email: getValues("email"),
+          password: getValues("password"),
+          name: getValues("name"),
+        };
+  
+        const response = await axios.post("http://localhost:8000/v1/auth/signup", signupData);
+        console.log("회원가입 성공:", response.data);
+        alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다!");
+        navigate("/login");
+      } catch (error: any) {
+        console.error("회원가입 실패:", error.response?.data || error.message);
+        alert("회원가입 중 오류가 발생했습니다.");
+      }
     }
   };
 
