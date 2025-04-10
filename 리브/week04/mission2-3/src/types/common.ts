@@ -1,6 +1,7 @@
-export interface ApiResponse<T> {
-    data: T;
-    message: string;
-    status: number;
-  }
+export type CommonResponse<T>={
+  status: boolean;
+  statusCode: number;
+  message: string;
+  data:T
+};
   

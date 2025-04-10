@@ -1,11 +1,12 @@
 import axios from "axios";
+import { LOCAL_STORAGE_KEY } from "../constants/key";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000", 
+  baseURL: import.meta.env.VITE_SERVER_API_URL, 
   headers: {
-    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem(LOCAL_STORAGE_KEY.accessToken)}`,
   },
-  withCredentials: true,
 });
+
 
 
