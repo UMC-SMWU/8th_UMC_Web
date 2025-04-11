@@ -10,7 +10,7 @@ const MyPage = () => {
 
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
-    const storedEmail = localStorage.getItem("userEmail"); // 로그인 시 저장해두면 좋아요
+    const storedEmail = localStorage.getItem("userEmail"); 
     const storedId = localStorage.getItem("userId");
 
 
