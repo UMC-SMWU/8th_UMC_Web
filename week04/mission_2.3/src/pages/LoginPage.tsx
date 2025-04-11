@@ -37,12 +37,14 @@ const LoginPage = () => {
                 localStorage.setItem("refreshToken", refreshToken);
                 localStorage.setItem("userId", String(id));
                 localStorage.setItem("userName", name);
+                localStorage.setItem("userEmail", values.email);
+
                 console.log("로그인 성공:", response.data);
 
                  alert("로그인에 성공했습니다!");
 
                 // 홈으로 이동
-                navigate("/");
+                navigate("/mypage");
             } else {
                 setErrorMessage("로그인에 실패했습니다.");
             }
