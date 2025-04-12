@@ -1,14 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import useForm from "../hooks/useForm"
 import { UserSigninInformation, validateSignin } from "../utils/validate"
-import { postSignin } from "../apis/auth";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { BsArrowLeftShort } from "react-icons/bs";
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+  const { login, accessToken } = useAuth();
+
+  useEffect(() => {
+    if(accessToken) {
+      navigate("/");
+    }
+  }, [navigate, accessToken]);
+
   const { values, errors, touched, getInputProps } = useForm<UserSigninInformation>({
     initialValue: {
       email: "",
@@ -18,15 +24,7 @@ const LoginPage = () => {
   });
 
   const handleSubmit = async () => {
-    let response;
-    try {
-      response = await postSignin(values);
-      console.log('로그인 요청:', response);
-      setItem(response.data.accessToken);
-      navigate("/my");
-    } catch(e) {
-      window.alert(response?.data);
-    }
+    await login(values);
   };
 
   // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화

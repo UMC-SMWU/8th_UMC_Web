@@ -1,7 +1,16 @@
 import { Outlet, useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext";
 
 const HomeLayout = () => {
+  const { accessToken, logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    if (accessToken) {
+      logout();
+    }
+    navigate("/login");
+  }
   return (
     <div className='h-dvh flex flex-col bg-gray-900 text-white'>
         <nav className="flex justify-between items-center text-white font-bold outline-4 outline-[#6c9ace] py-2">
@@ -9,10 +18,14 @@ const HomeLayout = () => {
           <div>
             <button 
               className="bg-[#6c9ace] text-white py-2 mx-1 p-[10px] rounded-sm text-sm hover:bg-[#6c9ace]/80 transition-colors duration-200 cursor-pointer"
-              onClick={() => navigate("/login")}>로그인</button>
-            <button 
+              onClick={handleButtonClick}>
+                {accessToken ? "로그아웃" : "로그인"}
+              </button>
+            {!accessToken && (
+              <button 
               className="bg-[#6c9ace] text-white py-2 mx-1 p-[10px] rounded-sm text-sm hover:bg-[#6c9ace]/80 transition-colors duration-200 cursor-pointer"
               onClick={() => navigate("/signup")}>회원가입</button>
+            )}
           </div>
         </nav>
         <main className='flex-1'>
