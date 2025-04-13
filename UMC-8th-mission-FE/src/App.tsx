@@ -8,6 +8,7 @@ import MyPage from './pages/MyPage'
 import SignupStep from './pages/SignupStep'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedLayout from './layouts/ProtectedLayout'
+import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage'
 
 // 1. 홈페이지
 // 2. 로그인 페이지
@@ -23,6 +24,7 @@ const publicRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> }, // / 경로에 해당하는 페이지
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupStep />},
+      { path: 'v1/auth/google/callback', element: <GoogleLoginRedirectPage />}
     ]
   }
 ]
