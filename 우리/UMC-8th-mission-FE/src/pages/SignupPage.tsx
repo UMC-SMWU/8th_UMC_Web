@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { postSignup } from "../apis/auth";
+import { useState } from "react";
 
 // validate.ts 에서 해야하는 과정 간단히
 const schema = z.object({
@@ -53,10 +54,12 @@ const SignupPage = () => {
     const { passwordCheck, ...rest} = data; // pwCheck 제외한 나머지 전송
 
     const response = await postSignup(rest);
+    navigate("/login");
     console.log('제출 요청:', response);
   };
 
   const navigate = useNavigate();
+  const [isShowPassword, setIsShowPassword] = useState(false); // 비밀번호 보이기 상태
 
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 ">
@@ -94,22 +97,36 @@ const SignupPage = () => {
         />
         {errors.email && <div className="text-xs text-red-500">{errors.email.message}</div>}
         {/* 비밀번호 입력 */}
-        <input 
-          {...register("password")}
-          className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
-            ${errors?.password  ? "border-red-500 bg-red-200" : "border-gray-300"}`}
-          type="password"
-          placeholder="비밀번호"
-        />
+        <div className="relative flex items-center justify-end">
+          <input 
+            {...register("password")}
+            className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+              ${errors?.password  ? "border-red-500 bg-red-200" : "border-gray-300"}`}
+            type={isShowPassword ? "text" : "password"}
+            placeholder="비밀번호"
+          />
+          <img 
+            className="absolute w-5 cursor-pointer mx-auto right-3"
+            src={isShowPassword ? "src/assets/eyeopen.svg" : "src/assets/eyeclose.svg"} 
+            onClick={() => setIsShowPassword(!isShowPassword)}
+          />
+        </div>
         {errors.password && <div className="text-xs text-red-500">{errors.password.message}</div>}
         {/* 비밀번호 확인 */}
-        <input 
-          {...register("passwordCheck")}
-          className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
-            ${errors?.passwordCheck  ? "border-red-500 bg-red-200" : "border-gray-300"}`}
-          type="password"
-          placeholder="비밀번호확인"
-        />
+        <div className="relative flex items-center justify-end">
+          <input 
+            {...register("passwordCheck")}
+            className={`border border-[#ccc] w-[300px] p-[10px] rounded-sm focus:border-[#3e623b] focus:outline-none
+              ${errors?.passwordCheck  ? "border-red-500 bg-red-200" : "border-gray-300"}`}
+            type={isShowPassword ? "text" : "password"}
+            placeholder="비밀번호확인"
+          />
+          <img 
+              className="absolute w-5 cursor-pointer mx-auto right-3"
+              src={isShowPassword ? "src/assets/eyeopen.svg" : "src/assets/eyeclose.svg"} 
+              onClick={() => setIsShowPassword(!isShowPassword)}
+          />
+        </div>
         {errors.passwordCheck && <div className="text-xs text-red-500">{errors.passwordCheck.message}</div>}
         {/* 이름 입력 */}
         <input 
