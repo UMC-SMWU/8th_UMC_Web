@@ -34,6 +34,10 @@ const LoginPage = () => {
         await login(values);
         navigate("/mypage");
     };
+
+    const handleGoogleLogin = () => {
+        window.location.href = import.meta.env.VITE_SERVER_API_URL+ "/v1/auth/google/login";
+      }
     
 
     //오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화
@@ -56,8 +60,8 @@ const LoginPage = () => {
 
                 {/* 구글 로그인 버튼 */}
                 <button
-                   // onClick={handleGoogleLogin}
-                    className="w-[300px] bg-white text-black py-3 px-4 rounded-md font-medium hover:bg-gray-200 transition-colors flex items-center gap-3"
+                    onClick={handleGoogleLogin}
+                    className="w-[300px] bg-white text-black py-3 px-4 rounded-md font-medium hover:bg-gray-200 transition-colors flex items-center gap-10"
                 >
                     <img
                       src={GoogleLogo}

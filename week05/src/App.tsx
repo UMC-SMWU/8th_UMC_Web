@@ -6,6 +6,7 @@ import HomeLayout from "./layouts/HomeLayout";
 import MyPage from "./pages/MyPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import GoogleLoginRedirectPage from "./pages/GoogleLoginRedirectPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/*" element={<HomeLayout />} />
+          <Route path="v1/auth/google/callback" element = {<GoogleLoginRedirectPage/>}/>
           <Route
             path="/mypage"
             element={

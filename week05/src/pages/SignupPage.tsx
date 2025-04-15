@@ -82,7 +82,7 @@ const SignupPage = () => {
         {/* 구글 로그인 버튼 */}
         <button
            // onClick={handleGoogleLogin}
-            className="w-[300px] bg-white text-black py-3 px-4 rounded-md font-medium hover:bg-gray-200 transition-colors flex items-center gap-3"
+            className="w-[300px] bg-white text-black py-3 px-4 rounded-md font-medium hover:bg-gray-200 transition-colors flex items-center gap-10"
         >
             <img
               src={GoogleLogo}
