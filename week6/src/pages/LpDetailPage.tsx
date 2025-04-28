@@ -35,7 +35,6 @@ export default function LpDetailPage() {
           </div>
         </div>
         <div className="flex justify-center mt-6">
-          {/* 이미지만 크기만큼 감싸기 */}
           <div className="relative inline-flex justify-center items-center p-4 shadow-md shadow-black rounded-xl">
             <div className="absolute size-20 bg-white rounded-full z-10 border-2 border-gray-600" />
             <img
