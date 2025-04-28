@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import LpCardSkeleton from "./LpCardSkeleton";
 
 type LpCardProps = {
   lp: {
