@@ -1,43 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../apis/axios";
-import dayjs from "dayjs";
-import "dayjs/locale/ko";
 import { useAuth } from "../context/AuthContext";
-
-type Lp = {
-  id: number;
-  title: string;
-  content: string;
-  thumbnail: string;
-  createdAt: string;
-  likes: { id: number }[];
-};
-
-const fetchLps = async (order: string) => {
-  const res = await axiosInstance("/v1/lps", {
-    params: {
-      order: order,
-      limit: 50,
-    },
-  });
-  return res.data.data.data as Lp[];
-};
+import { PAGINATION_ORDER } from "../enums/common";
+import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
+import "dayjs/locale/ko";
+import LpCard from "../components/LpCard/LpCard";
+import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
+import LpCardSkeleton from "../components/LpCard/LpCardSkeleton";
 
 const HomePage = () => {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const { data: lps, refetch } = useQuery({
-    queryKey: ["lps", order],
-    queryFn: () => fetchLps(order),
-  });
+  const {
+    data,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetInfiniteLpList(50, "", order === "asc" ? PAGINATION_ORDER.asc : PAGINATION_ORDER.desc);
 
   useEffect(() => {
-    refetch();
-  }, [order]);
+    if (!observerRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const handleCardClick = (lpId: number) => {
     if (!isLoggedIn) {
@@ -63,28 +64,29 @@ const HomePage = () => {
         </select>
       </div>
 
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {lps?.map((lp) => (
-          <div
-            key={lp.id}
-            onClick={() => handleCardClick(lp.id)}
-            className="relative overflow-hidden rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-110"
-          >
-            <img
-              src={lp.thumbnail}
-              alt={lp.title}
-              className="w-full h-60 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center p-4 text-center">
-              <h2 className="text-lg font-bold mb-2">{lp.title}</h2>
-              <p className="text-sm text-gray-300">
-                {dayjs(lp.createdAt).locale("ko").format("YYYY.MM.DD")}
-              </p>
-              <p className="text-sm mt-1">❤️ {lp.likes.length}개</p>
-            </div>
-          </div>
-        ))}
-      </div>
+  {!data && isFetching ? (
+    <LpCardSkeletonList />
+  ) : (
+    <>
+      {data?.pages.flatMap((page) =>
+        page.data.data.map((lp: any) => (
+          <LpCard key={lp.id} lp={lp} onClick={handleCardClick} />
+        ))
+      )}
+      {isFetchingNextPage && (
+        Array.from({ length: 5 }).map((_, index) => (
+          <LpCardSkeleton key={`skeleton-${index}`} />
+        ))
+      )}
+    </>
+  )}
+</div>
+      <div ref={observerRef} className="h-10" />
+      {isFetchingNextPage && (
+        <p className="text-center mt-4">Loading more...</p>
+      )}
     </div>
   );
 };
