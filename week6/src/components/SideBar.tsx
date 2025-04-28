@@ -1,4 +1,5 @@
 import { Search, UserRound } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SideBarProps {
   isOpen: boolean;
@@ -6,6 +7,8 @@ interface SideBarProps {
 }
 
 export default function SideBar({ isOpen }: SideBarProps) {
+  const navigate = useNavigate();
+
   return (
     <aside
       className={`fixed left-0 top-16 h-[calc(100%-4rem)] w-64 bg-[#0d0d0d] p-4 text-white z-50 transform
@@ -13,17 +16,30 @@ export default function SideBar({ isOpen }: SideBarProps) {
           transition-transform duration-300 ease-in-out flex flex-col justify-between`}
     >
       <div className="flex flex-col gap-6 mt-10">
-        <div className="flex items-center gap-2 cursor-pointer">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => navigate("")}
+        >
           <Search color="white" />
           <p>찾기</p>
         </div>
-        <div className="flex items-center gap-2 cursor-pointer">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => {
+            navigate("/mypage");
+          }}
+        >
           <UserRound color="white" />
           <p>마이페이지</p>
         </div>
       </div>
 
-      <span className="mb-10 cursor-pointer text-gray-400 text-center">
+      <span
+        className="mb-10 cursor-pointer text-gray-400 text-center"
+        onClick={() => {
+          navigate("");
+        }}
+      >
         탈퇴하기
       </span>
     </aside>

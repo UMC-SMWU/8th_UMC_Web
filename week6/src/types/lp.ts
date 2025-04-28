@@ -1,4 +1,4 @@
-import { CursorBaseResponse } from "./common";
+import { BaseResponse, CursorBaseResponse } from "./common";
 
 export type ResponseLpDto = CursorBaseResponse<{
   id: number;
@@ -9,8 +9,22 @@ export type ResponseLpDto = CursorBaseResponse<{
   authorId: number;
   createdAt: Date;
   updatedAt: Date;
-  tags: Tag;
+  tags: Tag[];
   likes: Like[];
+}>;
+
+export type ResponseLpDetailDto = BaseResponse<{
+  id: number;
+  title: string;
+  content: string;
+  thumbnail: string;
+  published: boolean;
+  authorId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  tags: Tag[];
+  likes: Like[];
+  author: Author;
 }>;
 
 export type Tag = {
@@ -22,4 +36,14 @@ export type Like = {
   id: number;
   userId: number;
   lpId: number;
+};
+
+export type Author = {
+  id: number;
+  name: string;
+  email: string;
+  bio?: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
 };

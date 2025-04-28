@@ -25,7 +25,7 @@ export type PaginationDto = {
   order?: PAGINATION_ORDER;
 };
 
-enum PAGINATION_ORDER {
+export enum PAGINATION_ORDER {
   ASC = "asc",
   DESC = "desc",
 }

@@ -15,6 +15,7 @@ import ProtectedLayout from "./layout/ProtectedLayout";
 import GoogleLoginRedirectPage from "./pages/GoogleLoginRedirectPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import LpDetailPage from "./pages/LpDetailPage";
 
 // 인증 없이 접근 가능한 라우트
 const publicRoutes: RouteObject[] = [
@@ -52,6 +53,10 @@ const protectedRoutes: RouteObject[] = [
       {
         path: "mypage",
         element: <MyPage />,
+      },
+      {
+        path: "lp/:lpId",
+        element: <LpDetailPage />,
       },
     ],
   },

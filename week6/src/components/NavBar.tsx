@@ -11,8 +11,10 @@ export default function NavBar() {
   const { accessToken, logout } = useAuthContext();
   const [nickname, setNickname] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [wasSidebarOpen, setWasSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(true);
+    setWasSidebarOpen(true);
   };
 
   useEffect(() => {
@@ -26,13 +28,15 @@ export default function NavBar() {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(wasSidebarOpen);
       }
     };
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [wasSidebarOpen]);
 
   return (
     <>
@@ -70,10 +74,14 @@ export default function NavBar() {
           </section>
         )}
       </nav>
+
       {isSidebarOpen && (
         <div
           className="fixed inset-0 "
-          onClick={() => setIsSidebarOpen(false)}
+          onClick={() => {
+            setIsSidebarOpen(false);
+            setWasSidebarOpen(false);
+          }}
         />
       )}
       <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
