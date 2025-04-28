@@ -13,6 +13,15 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  const { getItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+  const accessToken = getItem();
+  if (accessToken) {
+    config.headers["Authorization"] = `Bearer ${accessToken}`;
+  }
+  return config;
+});
+
 // 📌 응답 인터셉터: 401 처리
 axiosInstance.interceptors.response.use(
   (response) => response,

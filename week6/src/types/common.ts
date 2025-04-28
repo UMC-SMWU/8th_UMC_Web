@@ -25,6 +25,13 @@ export type PaginationDto = {
   order?: PAGINATION_ORDER;
 };
 
+export type CommentPaginationDto = {
+  lpId: number;
+  cursor?: number;
+  limit?: number;
+  order?: PAGINATION_ORDER;
+}
+
 export enum PAGINATION_ORDER {
   ASC = "asc",
   DESC = "desc",
