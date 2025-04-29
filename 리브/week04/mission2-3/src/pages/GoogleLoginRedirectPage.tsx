@@ -12,8 +12,8 @@ const GoogleLoginRedirectPage = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("accessToken");
-    const refreshToken = urlParams.get("refreshToken");
+    const accessToken = urlParams.get(LOCAL_STORAGE_KEY.accessToken);
+    const refreshToken = urlParams.get(LOCAL_STORAGE_KEY.refreshToken);
 
     if (accessToken && refreshToken) {
       setAccessToken(accessToken);
