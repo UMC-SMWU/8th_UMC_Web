@@ -20,8 +20,8 @@ export type ResponseLpListDto = CurserBasedResponse<{
         thumbnail: string;
         published: boolean;
         authorId: number;
-        createdAt: Date;
-        updatedAt: Date;
+        createdAt: string;
+        updatedAt: string;
         tags: Tag[];
         likes: Likes[];
     }[];
