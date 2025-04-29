@@ -7,7 +7,7 @@ import { postLogin, postLogout } from "../api/AuthService";
 interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
-  name: string | null;
+  nickname: string | null;
   login: (requestLoginDto: RequestLoginDto) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -15,7 +15,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   accessToken: null,
   refreshToken: null,
-  name: null,
+  nickname: null,
   login: async () => {},
   logout: async () => {},
 });
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       value={{
         accessToken: getAccessToken(),
         refreshToken: getRefreshToken(),
-        name: getNickname(),
+        nickname: getNickname(),
         login,
         logout,
       }}

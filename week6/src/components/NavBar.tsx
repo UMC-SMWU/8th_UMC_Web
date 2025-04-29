@@ -2,27 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import NavButton from "./NavButton";
 import { AlignJustify, Search } from "lucide-react";
-import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 
 export default function NavBar() {
   const navigate = useNavigate();
-  const { accessToken, logout } = useAuthContext();
-  const [nickname, setNickname] = useState("");
+  const { accessToken, nickname, logout } = useAuthContext();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [wasSidebarOpen, setWasSidebarOpen] = useState(false);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(true);
     setWasSidebarOpen(true);
   };
-
-  useEffect(() => {
-    const storedNickname = localStorage.getItem(LOCAL_STORAGE_KEY.nickname);
-    if (storedNickname) {
-      setNickname(storedNickname);
-    }
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -58,7 +50,6 @@ export default function NavBar() {
               text="로그아웃"
               onClick={() => {
                 logout();
-                localStorage.removeItem(LOCAL_STORAGE_KEY.nickname);
               }}
               style="bg-pink-600"
             />
