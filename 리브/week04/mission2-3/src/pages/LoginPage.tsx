@@ -3,13 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { UserSignInformation, validateSignin } from "../utils/validate";
 import { FaGoogle } from "react-icons/fa";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { postSignin } from "../apis/auth";
-import { LOCAL_STORAGE_KEY } from "../constants/key";
-import { useLocalStorage } from "../hooks/useLocalStorage";  // useLocalStorage 임포트
+import { useAuth } from "../context/AuthContext";  
+import { useEffect } from "react";  
 
 const LoginPage = () => {
+  const {login, accessToken}=useAuth();
   const navigate = useNavigate();
-  const { setItem } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);  // useLocalStorage 사용
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/my");  
+    } else {
+      navigate("/login");
+    }
+  }, [navigate, accessToken]);  
+  
 
   const {
     register,
@@ -24,21 +32,20 @@ const LoginPage = () => {
     },
   });
 
-  const values = watch();
+  const values = watch();  // watch를 사용해 값을 가져옴
 
-  const onSubmit = async (data: UserSignInformation) => {  // async로 변경
-    const validationErrors = validateSignin(data);
-    if (validationErrors.email || validationErrors.password) {
-      return;
-    }
+  const onSubmit = async () => {
     try {
-      const response = await postSignin(data); 
-      setItem(response.data.accessToken);  // 로컬스토리지에 액세스 토큰 저장
-
-    } catch (error: any) {
-      alert(error.message); // 오류 메시지 표시
+      await login(values);
+      navigate("/my");
+    } catch (error) {
+      alert("로그인 실패");
       console.log(error);
     }
+  };
+
+  const handleGoogleLogin=()=> {
+    window.location.href=import.meta.env.VITE_SERVER_API_URL+"/v1/auth/google/login";
   };
 
   const isDisabled =
@@ -57,7 +64,10 @@ const LoginPage = () => {
         </div>
 
         {/* 구글 로그인 버튼 */}
-        <button className="flex items-center justify-center gap-2 border border-white w-full py-2 rounded-md">
+        <button
+          onClick={handleGoogleLogin}
+          className="flex items-center justify-center gap-2 border border-white w-full py-2 rounded-md hover:bg-white hover:text-black transition"
+        >
           <FaGoogle /> 구글 로그인
         </button>
 

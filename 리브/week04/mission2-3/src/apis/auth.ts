@@ -30,4 +30,10 @@ export const getMyInfo=async ():Promise<ResponseMyInfoDto>=> {
   return data as ResponseMyInfoDto;
 };
 
+export const postLogout=async ()=> {
+  const {data} =await axiosInstance.post("/vl/auth/signout");
+  
+  return data;
+}
+
   
