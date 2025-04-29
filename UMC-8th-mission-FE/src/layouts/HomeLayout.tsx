@@ -7,6 +7,8 @@ import { MdArrowBack, MdMenu, MdPerson, MdSearch } from "react-icons/md";
 const HomeLayout = () => {
   const { accessToken, logout } = useAuth();
   const navigate = useNavigate();
+  const name = localStorage.getItem("myName");
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 사이드바 상태 관리
 
   const handleLogoClick = () => {
@@ -99,7 +101,7 @@ const HomeLayout = () => {
             <div className="px-3 cursor-pointer">
               <MdSearch />
             </div>
-            {accessToken && <div className="text-sm">님 반갑습니다.</div>}
+            {accessToken && <div className="text-sm">{name}님 반갑습니다.</div>}
             <button
               className="text-white py-2 mx-1 p-[10px] rounded-sm text-sm cursor-pointer"
               onClick={handleButtonClick}

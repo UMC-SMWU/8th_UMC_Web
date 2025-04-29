@@ -2,10 +2,23 @@ import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"
 import Footer from "./Footer";
 import { MdArrowBack, MdMenu, MdPerson, MdSearch } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ResponseMyInfoDto } from "../types/auth";
+import { getMyInfo } from "../apis/auth";
 
 const ProtectedLayout = () => {
     const { accessToken, logout } = useAuth();
+
+    const [data, setData] = useState<ResponseMyInfoDto>();
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getMyInfo();
+            console.log(response);
+            setData(response);
+        };
+        getData();
+    },[]);
+
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -98,7 +111,7 @@ const ProtectedLayout = () => {
                   <MdSearch />
                 </div>
                 {accessToken && (
-                  <div className="text-sm">님 반갑습니다.</div>
+                  <div className="text-sm">{data?.data.name}님 반갑습니다.</div>
                 )}
                 <button 
                   className="text-white py-2 mx-1 p-[10px] rounded-sm text-sm cursor-pointer"

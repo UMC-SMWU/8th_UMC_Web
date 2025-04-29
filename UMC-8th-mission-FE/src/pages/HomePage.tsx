@@ -23,7 +23,7 @@ const HomePage = () => {
     <div className="mx-5">
       <input value={search} onChange={(e) => setSearch(e.target.value)} />
       <div className="flex justify-end mb-4">
-        <div className="flex border border-gray-300 rounded overflow-hidden">
+        <div className="flex border border-gray-300 rounded overflow-hidden font-bold">
           <button
             className={`px-4 py-2 text-center w-30 ${
               order === PAGINATION_ORDER.asc
