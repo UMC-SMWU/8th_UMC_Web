@@ -89,7 +89,7 @@ export default function LpDetailPage() {
             <img
               src={data?.data?.thumbnail}
               alt="Thumbnail"
-              className="w-80 h-80 object-cover rounded-full border-4 border-black animate-spin"
+              className="w-80 h-80 object-cover rounded-full border-4 border-black animate-spin-slow"
             />
           </div>
         </div>
