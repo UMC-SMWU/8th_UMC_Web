@@ -9,6 +9,8 @@ import SignupStep from './pages/SignupStep'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedLayout from './layouts/ProtectedLayout'
 import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // 1. 홈페이지
 // 2. 로그인 페이지
@@ -43,11 +45,22 @@ const protectedRoutes: RouteObject[] = [
 
 const router = createBrowserRouter([...publicRoutes, ...protectedRoutes])
 
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+    },
+  },
+});
+
 function App() {
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+    </QueryClientProvider>
   )
 }
 
