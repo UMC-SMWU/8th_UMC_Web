@@ -1,11 +1,20 @@
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { postSignin } from "../apis/auth";
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import useForm from "../hooks/useForm";
 import { UserSignInInformation, validateSignin } from "../utills/validate";
-import { LOCAL_STORAGE_KEY } from "../constants/key";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-    const {setItem} = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
+    const { login, accessToken } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (accessToken) {
+            navigate("/");
+        }
+    }, [navigate, accessToken]);
+
+
     const { values, errors, touched, getInputProps } = useForm<UserSignInInformation>({
         initialValue: {
           email: "",
@@ -15,20 +24,13 @@ const LoginPage = () => {
       });
   
   const handleSubmit = async () => {
-    console.log(values);
-    const response = await postSignin( values );
-    try {
-      setItem(response.data.accessToken);
-    } catch (error) {
-      alert(error?.message);
-    }
-    console.log(response);
-  };
+      await login(values);
+    };
   
   // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼을 비활성화
-  const isDisabled: boolean =
-    Object.values(errors || {}).some((error: string) => error.length > 0) || // 오류가 있으면 true
-    Object.values(values).some((value: string) => value === "");             // 입력값이 비어있으면 true
+  const isDisabled =
+    Object.values(errors || {}).some((error) => error.length > 0) || // 오류가 있으면 true
+    Object.values(values).some((value) => value === "");             // 입력값이 비어있으면 true
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4">
       <div className="flex flex-col gap-3">

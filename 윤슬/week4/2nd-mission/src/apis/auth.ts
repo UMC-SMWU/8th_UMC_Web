@@ -22,3 +22,8 @@ export const postSignup = async (
   
     return data;
   };
+
+  export const postLogout = async () => { 
+    const {data} = await axiosInstance.post("/v1/auth/logout");
+    return data;
+  };
