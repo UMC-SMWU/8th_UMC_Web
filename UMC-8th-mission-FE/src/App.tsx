@@ -11,6 +11,7 @@ import ProtectedLayout from './layouts/ProtectedLayout'
 import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import LpDetailPage from './pages/LpDetailPage'
 
 // 1. 홈페이지
 // 2. 로그인 페이지
@@ -39,6 +40,7 @@ const protectedRoutes: RouteObject[] = [
     errorElement: <NotFoundPage />,
     children: [
       { path: 'my', element: <MyPage /> },
+      { path: 'lp/:lpId', element: <LpDetailPage /> },
     ]
   }
 ]
