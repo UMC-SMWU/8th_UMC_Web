@@ -3,6 +3,7 @@ import useGetLpList from "../hooks/queries/useGetLpList";
 import { PAGINATION_ORDER } from "../enums/common";
 import { IoMdHeart } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -12,6 +13,18 @@ const HomePage = () => {
     search,
     order,
   });
+
+  const { getItem } = useLocalStorage("accessToken");
+  const isAuthenticated = !!getItem();
+
+  const handleCardClick = (lpId: number) => {
+    if (!isAuthenticated) {
+      window.alert("로그인이 필요한 서비스입니다. 로그인을 해주세요!!")
+      navigate("/login"); // 로그인 페이지로 이동
+    } else {
+      navigate(`/lp/${lpId}`);
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -54,7 +67,7 @@ const HomePage = () => {
               key={lp.id}
               className="relative w-full pb-[100%] rounded overflow-hidden group 
               hover:scale-120 transition-transform duration-300 hover:z-10"
-              onClick={() => navigate(`/lp/${lp.id}`)}
+              onClick={() => handleCardClick(lp.id)}
             >
               <img
                 src={lp.thumbnail}
