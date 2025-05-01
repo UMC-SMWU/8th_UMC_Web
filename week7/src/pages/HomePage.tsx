@@ -6,10 +6,20 @@ import SortButton from "../components/SortButton";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import LpItemSkeleton from "../components/LpItemSkeleton";
+import { Plus } from "lucide-react";
+import LpCreateModal from "../components/LpCreateModal.tsx";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.ASC);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => {
+    setIsModalOpen(true);
+    console.log("openModal");
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const {
     data,
@@ -83,11 +93,16 @@ export default function HomePage() {
           position="right"
         />
       </div>
-
       <div className="grid grid-cols-2 md:grid-cols-7 sm:grid-cols-5 xs:grid-cols-3 gap-4 text-2xl text-white">
         {renderItems()}
       </div>
-
+      <button
+        className="fixed bottom-10 right-10 bg-pink-600 text-white font-bold rounded-full p-4"
+        onClick={openModal}
+      >
+        <Plus color="white" />
+      </button>
+      {isModalOpen && <LpCreateModal closeModal={closeModal} />};
       {/* sentinel */}
       <div ref={ref} className="h-10" />
     </div>

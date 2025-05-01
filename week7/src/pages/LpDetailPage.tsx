@@ -9,11 +9,17 @@ import useGetInfiniteComments from "../hooks/queries/useGetInfiniteComments";
 import { useInView } from "react-intersection-observer";
 import CommentItemSkeleton from "../components/CommentItemSkeleton";
 import CommentItem from "../components/CommentItem";
+import useGetMyInfo from "../hooks/queries/useGetMyInfo.ts";
+import {useAuthContext} from "../context/AuthContext.tsx";
+import usePostLike from "../hooks/mutations/usePostLike.ts";
+import useDeleteLike from "../hooks/mutations/useDeleteLike.ts";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
-  const { data } = useGetLpDetail(lpId);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.ASC);
+  const { accessToken } = useAuthContext();
+  const { data } = useGetLpDetail(lpId);
+
   const {
     data: comments,
     fetchNextPage,
@@ -22,10 +28,25 @@ export default function LpDetailPage() {
     refetch,
     isLoading,
   } = useGetInfiniteComments(lpId, order, 10);
+
+  const { data: myInfo } = useGetMyInfo(accessToken);
+  console.log(myInfo);
+
   const { ref, inView } = useInView({ threshold: 1 });
   const handleOrderChange = (newOrder: PAGINATION_ORDER) => {
     setOrder(newOrder);
   };
+
+  const isLiked = data?.data.likes.some((like) => like.userId === myInfo?.data.id);
+  const { mutate: likeMutate } = usePostLike();
+  const { mutate: dislikeMutate } = useDeleteLike();
+  const toggleLike = () => {
+    if (isLiked) {
+        dislikeMutate(lpId);
+    } else {
+        likeMutate(lpId);
+    }
+  }
 
   const renderComments = () => {
     if (isLoading) {
@@ -62,7 +83,7 @@ export default function LpDetailPage() {
 
   return (
     <>
-      <div className="flex-col justify-center items-center text-gray-300 py-10 px-30 gap-4 bg-[#3e3f4355] mx-auto max-w-4xl mt-10 rounded-3xl">
+      <div className="flex-col justify-center items-center text-gray-300 py-10 px-30 gap-4 bg-[#3e3f43] mx-auto max-w-4xl mt-10 rounded-3xl">
         <div className="flex justify-between">
           <div className="flex items-center gap-2">
             <img
@@ -105,7 +126,7 @@ export default function LpDetailPage() {
           ))}
         </ul>
         <div className="flex items-center gap-2 justify-center mt-8">
-          <Heart color="white" />
+          <Heart color={isLiked? "red" : "white"} fill={isLiked? "red" : "transparent"} onClick={toggleLike} />
           <span>{data?.data?.likes.length}</span>
         </div>
         <div className="flex items-center justify-between">

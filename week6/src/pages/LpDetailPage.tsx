@@ -12,6 +12,7 @@ import CommentItem from "../components/CommentItem";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
+  const { ref, inView } = useInView({ threshold: 1 });
   const { data } = useGetLpDetail(lpId);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.ASC);
   const {
@@ -22,7 +23,7 @@ export default function LpDetailPage() {
     refetch,
     isLoading,
   } = useGetInfiniteComments(lpId, order, 10);
-  const { ref, inView } = useInView({ threshold: 1 });
+
   const handleOrderChange = (newOrder: PAGINATION_ORDER) => {
     setOrder(newOrder);
   };
