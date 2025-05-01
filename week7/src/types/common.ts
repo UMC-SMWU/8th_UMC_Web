@@ -30,9 +30,13 @@ export type CommentPaginationDto = {
   cursor?: number;
   limit?: number;
   order?: PAGINATION_ORDER;
-}
+};
 
 export enum PAGINATION_ORDER {
   ASC = "asc",
   DESC = "desc",
 }
+
+export type ResponseWithMessage = BaseResponse<{
+  message: string;
+}>;

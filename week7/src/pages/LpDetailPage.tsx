@@ -10,15 +10,17 @@ import { useInView } from "react-intersection-observer";
 import CommentItemSkeleton from "../components/CommentItemSkeleton";
 import CommentItem from "../components/CommentItem";
 import useGetMyInfo from "../hooks/queries/useGetMyInfo.ts";
-import {useAuthContext} from "../context/AuthContext.tsx";
+import { useAuthContext } from "../context/AuthContext.tsx";
 import usePostLike from "../hooks/mutations/usePostLike.ts";
 import useDeleteLike from "../hooks/mutations/useDeleteLike.ts";
+import { usePostComment } from "../hooks/mutations/useComment.ts";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.ASC);
   const { accessToken } = useAuthContext();
   const { data } = useGetLpDetail(lpId);
+  const [comment, setComment] = useState("");
 
   const {
     data: comments,
@@ -37,16 +39,26 @@ export default function LpDetailPage() {
     setOrder(newOrder);
   };
 
-  const isLiked = data?.data.likes.some((like) => like.userId === myInfo?.data.id);
+  const isLiked = data?.data.likes.some(
+    (like) => like.userId === myInfo?.data.id,
+  );
   const { mutate: likeMutate } = usePostLike();
   const { mutate: dislikeMutate } = useDeleteLike();
   const toggleLike = () => {
     if (isLiked) {
-        dislikeMutate(lpId);
+      dislikeMutate(lpId);
     } else {
-        likeMutate(lpId);
+      likeMutate(lpId);
     }
-  }
+  };
+
+  const { mutate: postComment } = usePostComment();
+  const handleCommentSubmit = () => {
+    postComment({
+      lpId,
+      requestPostCommentDto: { content: comment },
+    });
+  };
 
   const renderComments = () => {
     if (isLoading) {
@@ -66,8 +78,9 @@ export default function LpDetailPage() {
           avatar={comment.author.avatar}
           name={comment.author.name}
           content={comment.content}
+          isMe={comment.author.id === myInfo?.data.id}
         />
-      ))
+      )),
     );
   };
 
@@ -126,7 +139,11 @@ export default function LpDetailPage() {
           ))}
         </ul>
         <div className="flex items-center gap-2 justify-center mt-8">
-          <Heart color={isLiked? "red" : "white"} fill={isLiked? "red" : "transparent"} onClick={toggleLike} />
+          <Heart
+            color={isLiked ? "red" : "white"}
+            fill={isLiked ? "red" : "transparent"}
+            onClick={toggleLike}
+          />
           <span>{data?.data?.likes.length}</span>
         </div>
         <div className="flex items-center justify-between">
@@ -151,8 +168,12 @@ export default function LpDetailPage() {
             type="text"
             placeholder="댓글을 입력해주세요"
             className="flex-1 h-10 border-1 border-gray-400 rounded-md px-4"
+            onChange={(e) => setComment(e.target.value)}
           />
-          <button className="bg-gray-400 text-white rounded-md px-4 py-2">
+          <button
+            className="bg-gray-400 text-white rounded-md px-4 py-2"
+            onClick={handleCommentSubmit}
+          >
             작성
           </button>
         </div>
