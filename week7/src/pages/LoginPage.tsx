@@ -7,9 +7,10 @@ import SubmitButton from "../components/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
+import { usePostLogin } from "../hooks/mutations/useUser.ts";
 
 export default function LoginPage() {
-  const { accessToken, login } = useAuthContext();
+  const { accessToken } = useAuthContext();
   const navigate = useNavigate();
   const { values, errors, touched, getInputProps } = useForm<LoginForm>({
     initialValue: {
@@ -19,8 +20,10 @@ export default function LoginPage() {
     validate: validateLogin,
   });
 
-  const handleSubmit = async () => {
-    await login(values);
+  const { mutate: postLogin } = usePostLogin(values.email, values.password);
+
+  const handleSubmit = () => {
+    postLogin({ email: values.email, password: values.password });
   };
 
   const isDisabled =

@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import img_lp_black from "../assets/img_lp_black.png";
 import { useState } from "react";
-import usePostLp from "../hooks/mutations/usePostLp";
+import { useLps } from "../hooks/mutations/useLps.ts";
 
 export default function LpCreateModal({
   closeModal,
@@ -13,7 +13,7 @@ export default function LpCreateModal({
   const [content, setContent] = useState<string>("");
   const [tagInput, setTagInput] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const { mutate } = usePostLp();
+  const { mutate } = useLps();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

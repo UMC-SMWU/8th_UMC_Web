@@ -1,15 +1,16 @@
-import { PaginationDto } from "../types/common";
+import { BaseResponse, PaginationDto } from "../types/common";
 import {
   RequestPostLpDto,
   ResponseLikeDto,
   ResponseLpDetailDto,
   ResponseLpDto,
+  ResponsePatchLpDto,
   ResponsePostLpDto,
 } from "../types/lp";
 import { axiosInstance } from "./axios";
 
 export const getLps = async (
-  paginationDto: PaginationDto
+  paginationDto: PaginationDto,
 ): Promise<ResponseLpDto> => {
   const { data } = await axiosInstance.get("v1/lps", {
     params: paginationDto,
@@ -33,8 +34,26 @@ export const deleteLike = async (lpId: number): Promise<ResponseLikeDto> => {
 };
 
 export const postLp = async (
-  requestPostLpDto: RequestPostLpDto
+  requestPostLpDto: RequestPostLpDto,
 ): Promise<ResponsePostLpDto> => {
   const { data } = await axiosInstance.post("v1/lps", requestPostLpDto);
+  return data;
+};
+
+export const patchLp = async (
+  lpId: number,
+  requestPostLpDto: RequestPostLpDto,
+): Promise<ResponsePatchLpDto> => {
+  const { data } = await axiosInstance.patch(
+    `v1/lps/${lpId}`,
+    requestPostLpDto,
+  );
+  return data;
+};
+
+export const deleteLp = async (
+  lpId: number,
+): Promise<BaseResponse<{ data: boolean }>> => {
+  const { data } = await axiosInstance.delete(`v1/lps/${lpId}`);
   return data;
 };

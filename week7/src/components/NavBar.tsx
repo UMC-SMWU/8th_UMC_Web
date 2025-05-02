@@ -4,10 +4,11 @@ import NavButton from "./NavButton";
 import { AlignJustify, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import SideBar from "./SideBar";
+import { usePostLogout } from "../hooks/mutations/useUser.ts";
 
 export default function NavBar() {
   const navigate = useNavigate();
-  const { accessToken, nickname, logout } = useAuthContext();
+  const { accessToken, nickname } = useAuthContext();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [wasSidebarOpen, setWasSidebarOpen] = useState(false);
 
@@ -15,6 +16,8 @@ export default function NavBar() {
     setIsSidebarOpen(true);
     setWasSidebarOpen(true);
   };
+
+  const { mutate: postLogout } = usePostLogout();
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,9 +51,7 @@ export default function NavBar() {
             <NavButton text={`${nickname}님 반갑습니다.`} onClick={() => {}} />
             <NavButton
               text="로그아웃"
-              onClick={() => {
-                logout();
-              }}
+              onClick={postLogout}
               style="bg-pink-600"
             />
           </section>

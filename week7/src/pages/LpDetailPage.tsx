@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Heart, Pencil, Trash2 } from "lucide-react";
+import { Heart, Pencil, Trash2, X } from "lucide-react";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail";
 import formatDate from "../utils/formatDate";
 import SortButton from "../components/SortButton";
@@ -18,15 +18,17 @@ import {
   usePatchComment,
   usePostComment,
 } from "../hooks/mutations/useComment.ts";
+import { useDeleteLp, usePatchLp } from "../hooks/mutations/useLps.ts";
+import useTagManager from "../hooks/mutations/useTagManager.ts";
+import img_lp_black from "../assets/img_lp_black.png";
 
 export default function LpDetailPage() {
-  // 상태 및 변수 초기화
   const lpId = Number(useParams().lpId);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.ASC);
   const [comment, setComment] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
   const { accessToken } = useAuthContext();
 
-  // API 호출
   const { data: lpDetail } = useGetLpDetail(lpId);
   const { data: myInfo } = useGetMyInfo(accessToken);
   const {
@@ -38,7 +40,51 @@ export default function LpDetailPage() {
     isLoading,
   } = useGetInfiniteComments(lpId, order, 10);
 
-  // 좋아요 관련 로직
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [thumbnail, setThumbnail] = useState(img_lp_black);
+
+  const { tags, setTagInput, addTag, removeTag, setInitialTags } =
+    useTagManager();
+
+  useEffect(() => {
+    if (lpDetail) {
+      setTitle(lpDetail.data.title);
+      setContent(lpDetail.data.content);
+      setThumbnail(lpDetail.data.thumbnail);
+      setInitialTags(lpDetail.data.tags.map((tag) => tag.name) || []);
+    }
+  }, [lpDetail, setInitialTags]);
+
+  const { mutate: deleteLp } = useDeleteLp();
+  const { mutate: patchLp } = usePatchLp();
+  const handleDeleteLp = () => {
+    deleteLp(lpId);
+    window.location.href = "/";
+  };
+
+  const handlePatchLp = () => {
+    patchLp({
+      lpId,
+      requestPatchLpDto: {
+        title,
+        content,
+        thumbnail,
+        tags,
+        published: true,
+      },
+    });
+    setIsEditMode(false);
+  };
+
+  const handleEditMode = () => {
+    if (isEditMode) {
+      handlePatchLp();
+    } else {
+      setIsEditMode(true);
+    }
+  };
+
   const isLiked = lpDetail?.data.likes.some(
     (like) => like.userId === myInfo?.data.id,
   );
@@ -52,7 +98,6 @@ export default function LpDetailPage() {
     }
   };
 
-  // 댓글 관련 로직
   const { mutate: postComment } = usePostComment();
   const { mutate: deleteComment } = useDeleteComment();
   const { mutate: patchComment } = usePatchComment();
@@ -62,10 +107,7 @@ export default function LpDetailPage() {
   };
 
   const handleCommentSubmit = () => {
-    postComment({
-      lpId,
-      requestPostCommentDto: { content: comment },
-    });
+    postComment({ lpId, requestPostCommentDto: { content: comment } });
     setComment("");
   };
 
@@ -74,23 +116,26 @@ export default function LpDetailPage() {
   };
 
   const handleCommentPatch = (commentId: number, content: string) => {
-    patchComment({
-      lpId,
-      commentId,
-      requestPatchCommentDto: { content },
-    });
+    patchComment({ lpId, commentId, requestPatchCommentDto: { content } });
   };
 
-  // 댓글 렌더링
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) setThumbnail(reader.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
   const renderComments = () => {
     if (isLoading) {
       return Array.from({ length: 10 }).map((_, idx) => (
-        <CommentItemSkeleton key={`loading-skeleton-${idx}`} />
+        <CommentItemSkeleton key={`loading-${idx}`} />
       ));
     }
-
     if (!comments) return null;
-
     return comments.pages.flatMap((page, pageIndex) =>
       page.data.data.map((comment) => (
         <CommentItem
@@ -106,7 +151,6 @@ export default function LpDetailPage() {
     );
   };
 
-  // 무한 스크롤 및 정렬
   const { ref, inView } = useInView({ threshold: 1 });
 
   useEffect(() => {
@@ -114,9 +158,7 @@ export default function LpDetailPage() {
   }, [order, refetch]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
+    if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
@@ -137,33 +179,104 @@ export default function LpDetailPage() {
               : ""}
           </span>
         </div>
-        <div className="flex items-center justify-between mt-6">
-          <span className="text-2xl">{lpDetail?.data?.title}</span>
+        <div className="flex items-center justify-between gap-2 mt-6">
+          {isEditMode ? (
+            <input
+              type="text"
+              placeholder="제목을 입력해주세요"
+              className="flex-1 h-10 border-1 border-gray-400 rounded-md px-4"
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+            />
+          ) : (
+            <span className="text-2xl">{lpDetail?.data?.title}</span>
+          )}
+
           <div className="flex items-center gap-2">
-            <Pencil color="#BDBDBD" size={20} />
-            <Trash2 color="#BDBDBD" size={20} />
+            <Pencil color="#BDBDBD" size={20} onClick={handleEditMode} />
+            <Trash2 color="#BDBDBD" size={20} onClick={handleDeleteLp} />
           </div>
         </div>
         <div className="flex justify-center mt-6">
           <div className="relative inline-flex justify-center items-center p-4 shadow-md shadow-black rounded-xl">
             <div className="absolute size-20 bg-white rounded-full z-10 border-2 border-gray-600" />
             <img
-              src={lpDetail?.data?.thumbnail}
+              src={thumbnail}
               alt="Thumbnail"
-              className="w-80 h-80 object-cover rounded-full border-4 border-black animate-spin-slow"
+              className={`w-80 h-80 object-cover rounded-full border-4 border-black ${isEditMode ? "" : "animate-spin-slow"}`}
+              onClick={
+                isEditMode
+                  ? () => document.getElementById("thumbnailInput")?.click()
+                  : undefined
+              }
+            />
+            <input
+              id="thumbnailInput"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleThumbnailChange}
             />
           </div>
         </div>
-        <div className="text-sm mt-6">{lpDetail?.data?.content}</div>
+        <div className="text-sm mt-6">
+          {isEditMode ? (
+            <textarea
+              className="w-full h-40 border-1 border-gray-400 rounded-md p-4"
+              placeholder="내용을 입력해주세요"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          ) : (
+            lpDetail?.data?.content
+          )}
+        </div>
         <ul className="flex justify-center items-center gap-2 mt-10">
-          {lpDetail?.data?.tags.map((tag) => (
-            <li
-              key={tag.id}
-              className="text-gray-200 text-sm bg-gray-700 rounded-xl px-3 py-0.5"
-            >
-              #{tag.name}
-            </li>
-          ))}
+          {isEditMode ? (
+            <div className="flex-col w-full gap-2">
+              <div className="flex items-center gap-2 mb-4">
+                <input
+                  type="text"
+                  placeholder="LP Tag"
+                  onChange={(e) => setTagInput(e.target.value)}
+                  className="flex-1 border border-gray-300 text-white rounded-md p-2"
+                />
+                <button
+                  className="bg-gray-400 text-white rounded-md px-4 py-2 hover:bg-pink-600"
+                  onClick={addTag}
+                >
+                  Add
+                </button>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {tags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="flex items-center border-1 border-gray-400 text-white rounded-lg px-3 py-1"
+                  >
+                    <span>{tag}</span>
+                    <button
+                      className="ml-2 text-white"
+                      onClick={() => removeTag(tag)}
+                    >
+                      <X size={16} color="white" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <>
+              {lpDetail?.data?.tags.map((tag) => (
+                <li
+                  key={tag.id}
+                  className="text-gray-200 text-sm bg-gray-700 rounded-xl px-3 py-0.5"
+                >
+                  #{tag.name}
+                </li>
+              ))}
+            </>
+          )}
         </ul>
         <div className="flex items-center gap-2 justify-center mt-8">
           <Heart

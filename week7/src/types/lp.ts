@@ -72,3 +72,15 @@ export type RequestPostLpDto = {
   tags: string[];
   published: boolean;
 };
+
+export type ResponsePatchLpDto = BaseResponse<{
+  id: number;
+  title: string;
+  content: string;
+  thumbnail: string;
+  published: boolean;
+  authorId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  tags: Tag[];
+}>;
