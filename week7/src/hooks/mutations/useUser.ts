@@ -1,9 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { deleteUser, patchUser } from "../../api/UserService.ts";
+import { useAuthContext } from "../../context/AuthContext.tsx";
 
 function useDeleteUser() {
+  const { signOut } = useAuthContext();
   return useMutation({
     mutationFn: deleteUser,
+    onSuccess: signOut,
   });
 }
 

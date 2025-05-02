@@ -10,6 +10,7 @@ interface AuthContextType {
   nickname: string | null;
   login: (requestLoginDto: RequestLoginDto) => Promise<void>;
   logout: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   nickname: null,
   login: async () => {},
   logout: async () => {},
+  signOut: async () => {},
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -67,6 +69,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const signOut = async () => {
+    removeAccessToken();
+    removeRefreshToken();
+    removeNickname();
+    window.location.href = "/";
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -75,6 +84,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         nickname: getNickname(),
         login,
         logout,
+        signOut: signOut,
       }}
     >
       {children}

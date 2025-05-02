@@ -1,5 +1,6 @@
 import { Search, UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useDeleteUser } from "../hooks/mutations/useUser.ts";
 
 interface SideBarProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface SideBarProps {
 
 export default function SideBar({ isOpen }: SideBarProps) {
   const navigate = useNavigate();
+  const { mutate: deleteUser } = useDeleteUser();
 
   return (
     <aside
@@ -37,6 +39,7 @@ export default function SideBar({ isOpen }: SideBarProps) {
       <span
         className="mb-10 cursor-pointer text-gray-400 text-center"
         onClick={() => {
+          deleteUser();
           navigate("");
         }}
       >
