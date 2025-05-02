@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteUser, patchUser } from "../../api/UserService.ts";
 import { useAuthContext } from "../../context/AuthContext.tsx";
 import { postLogin, postLogout } from "../../api/AuthService.ts";
+import { LOCAL_STORAGE_KEY } from "../../constants/key.ts";
 
 function useDeleteUser() {
   const { signOut } = useAuthContext();
@@ -14,8 +15,12 @@ function useDeleteUser() {
 function usePatchUser() {
   return useMutation({
     mutationFn: patchUser,
+    onMutate: (variables) => {
+      localStorage.setItem(LOCAL_STORAGE_KEY.nickname, variables.name);
+    },
     onSuccess: (data) => {
       console.log(data);
+      localStorage.setItem(LOCAL_STORAGE_KEY.nickname, data.data.name);
     },
     onError: (error) => console.log(error),
   });
