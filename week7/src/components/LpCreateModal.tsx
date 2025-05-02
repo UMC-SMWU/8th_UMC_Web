@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import img_lp_black from "../assets/img_lp_black.png";
 import { useState } from "react";
 import { useLps } from "../hooks/mutations/useLps.ts";
+import useTagManager from "../hooks/mutations/useTagManager.ts";
 
 export default function LpCreateModal({
   closeModal,
@@ -11,8 +12,7 @@ export default function LpCreateModal({
   const [thumbnail, setThumbnail] = useState<string>(img_lp_black);
   const [name, setName] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [tagInput, setTagInput] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
+  const { tags, setTagInput, addTag, removeTag } = useTagManager();
   const { mutate } = useLps();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,17 +26,6 @@ export default function LpCreateModal({
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
-      setTagInput("");
-    }
-  };
-
-  const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
   };
 
   const submitLp = () => {
@@ -96,13 +85,12 @@ export default function LpCreateModal({
           <input
             type="text"
             placeholder="LP Tag"
-            value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             className="border border-gray-300 text-white rounded-md p-2 w-full"
           />
           <button
             className="bg-gray-400 text-white rounded-md px-4 py-2 hover:bg-pink-600"
-            onClick={handleAddTag}
+            onClick={addTag}
           >
             Add
           </button>
@@ -116,7 +104,7 @@ export default function LpCreateModal({
               <span>{tag}</span>
               <button
                 className="ml-2 text-white"
-                onClick={() => handleRemoveTag(tag)}
+                onClick={() => removeTag(tag)}
               >
                 <X size={16} color="white" />
               </button>
