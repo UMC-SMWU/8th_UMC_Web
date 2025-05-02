@@ -44,7 +44,7 @@ export default function LpDetailPage() {
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState(img_lp_black);
 
-  const { tags, setTagInput, addTag, removeTag, setInitialTags } =
+  const { tags, tagInput, setTagInput, addTag, removeTag, setInitialTags } =
     useTagManager();
 
   useEffect(() => {
@@ -238,6 +238,7 @@ export default function LpDetailPage() {
                 <input
                   type="text"
                   placeholder="LP Tag"
+                  value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   className="flex-1 border border-gray-300 text-white rounded-md p-2"
                 />

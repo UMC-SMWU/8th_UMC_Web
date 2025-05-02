@@ -12,7 +12,7 @@ export default function LpCreateModal({
   const [thumbnail, setThumbnail] = useState<string>(img_lp_black);
   const [name, setName] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const { tags, setTagInput, addTag, removeTag } = useTagManager();
+  const { tags, tagInput, setTagInput, addTag, removeTag } = useTagManager();
   const { mutate } = useLps();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +85,7 @@ export default function LpCreateModal({
           <input
             type="text"
             placeholder="LP Tag"
+            value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             className="border border-gray-300 text-white rounded-md p-2 w-full"
           />
