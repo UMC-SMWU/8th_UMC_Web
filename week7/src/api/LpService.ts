@@ -1,6 +1,7 @@
-import { BaseResponse, PaginationDto } from "../types/common";
+import { PaginationDto } from "../types/common";
 import {
   RequestPostLpDto,
+  ResponseDeleteLpDto,
   ResponseLikeDto,
   ResponseLpDetailDto,
   ResponseLpDto,
@@ -51,9 +52,7 @@ export const patchLp = async (
   return data;
 };
 
-export const deleteLp = async (
-  lpId: number,
-): Promise<BaseResponse<{ data: boolean }>> => {
+export const deleteLp = async (lpId: number): Promise<ResponseDeleteLpDto> => {
   const { data } = await axiosInstance.delete(`v1/lps/${lpId}`);
   return data;
 };

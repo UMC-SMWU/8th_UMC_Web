@@ -58,9 +58,9 @@ export default function LpDetailPage() {
 
   const { mutate: deleteLp } = useDeleteLp();
   const { mutate: patchLp } = usePatchLp();
+
   const handleDeleteLp = () => {
     deleteLp(lpId);
-    window.location.href = "/";
   };
 
   const handlePatchLp = () => {

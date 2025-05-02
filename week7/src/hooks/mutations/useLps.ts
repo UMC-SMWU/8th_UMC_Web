@@ -42,7 +42,9 @@ function useDeleteLp() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEY.lps],
       });
+      window.location.href = "/";
     },
+    onError: (error) => console.error(error),
   });
 }
 

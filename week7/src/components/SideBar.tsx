@@ -81,7 +81,6 @@ export default function SideBar({ isOpen }: SideBarProps) {
           className="mb-10 cursor-pointer text-gray-400 text-center"
           onClick={() => {
             setIsModalOpen(true);
-            navigate("");
           }}
         >
           탈퇴하기

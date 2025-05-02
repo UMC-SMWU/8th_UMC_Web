@@ -84,3 +84,10 @@ export type ResponsePatchLpDto = BaseResponse<{
   updatedAt: Date;
   tags: Tag[];
 }>;
+
+export type ResponseDeleteLpDto = {
+  status: boolean;
+  statusCode: number;
+  message: string;
+  data: boolean;
+};
