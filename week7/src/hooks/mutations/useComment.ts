@@ -41,6 +41,9 @@ function usePatchComment() {
     }) => patchComment(lpId, commentId, requestPatchCommentDto),
     onSuccess: (data) => {
       console.log("Patch Comment Success", data);
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.comments],
+      });
     },
   });
 }
@@ -51,6 +54,9 @@ function useDeleteComment() {
       deleteComment(lpId, commentId),
     onSuccess: (data) => {
       console.log("Delete Comment Success", data);
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.comments],
+      });
     },
   });
 }
