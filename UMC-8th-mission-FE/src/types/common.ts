@@ -8,14 +8,20 @@ export type CommonResponse<T> = {
 };
 
 
-export type CurserBasedResponse<T> = {
-    status: boolean;
-    statusCode: number;
-    message: string;
+// export type CurserBasedResponse<T> = {
+//     status: boolean;
+//     statusCode: number;
+//     message: string;
+//     data: T;
+//     nextCursor: number;
+//     hasNext: boolean;
+// };
+
+export type CurserBasedResponse<T> = CommonResponse<{
     data: T;
-    nextCursor: number;
+    nextCursor: number | null;
     hasNext: boolean;
-};
+}>;
 
 
 export type PaginationDto = {

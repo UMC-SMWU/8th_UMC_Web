@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useGetLpList from "../hooks/queries/useGetLpList";
 import { PAGINATION_ORDER } from "../enums/common";
 import { IoMdHeart } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
+import { useInView } from "react-intersection-observer";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
-  const { data, isError, isLoading } = useGetLpList({
-    search,
-    order,
+  // const { data, isError, isLoading } = useGetLpList({
+  //   search,
+  //   order,
+  // });
+
+  const {data: lps, isFetchingNextPage, hasNextPage, isLoading, fetchNextPage, isError} = 
+    useGetInfiniteLpList(5, search, PAGINATION_ORDER.desc);
+
+  // ref  특정 html 요소 감시 가능
+  const {ref, inView} = useInView({
+    threshold: 0,
   });
+
+  useEffect(() => {
+    if(inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   const { getItem } = useLocalStorage("accessToken");
   const isAuthenticated = !!getItem();
@@ -61,8 +77,10 @@ const HomePage = () => {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-2 px-4">
-        {data?.data.map((lp) => (
+      <div className="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-2 px-4">
+        {lps?.pages?.map((page) => page.data.data)
+          ?.flat()
+          ?.map((lp) => (
             <div 
               key={lp.id}
               className="relative w-full pb-[100%] rounded overflow-hidden group 
@@ -88,7 +106,7 @@ const HomePage = () => {
             </div>
         ))}
       </div>
-      
+      <div ref={ref}>{isFetchingNextPage && <div>Loading...</div>}</div>
     </div>
   )
 }
