@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext } from "react";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { RequestLoginDto } from "../types/auth";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     getItem: getNickname,
     removeItem: removeNickname,
   } = useLocalStorage(LOCAL_STORAGE_KEY.nickname);
+  const [nickname, setNicknameState] = useState(getNickname());
 
   const login = async (requestLoginDto: RequestLoginDto) => {
     try {
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
         setNickname(data.name);
+        setNicknameState(data.name);
         alert("로그인 성공");
         window.location.href = "/mypage";
       }
@@ -61,6 +63,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       removeAccessToken();
       removeRefreshToken();
       removeNickname();
+      setNicknameState(null);
       alert("로그아웃 성공");
       window.location.href = "/login";
     } catch (error) {
@@ -81,7 +84,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       value={{
         accessToken: getAccessToken(),
         refreshToken: getRefreshToken(),
-        nickname: getNickname(),
+        nickname,
         login,
         logout,
         signOut: signOut,
