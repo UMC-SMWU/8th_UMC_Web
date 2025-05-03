@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLps } from "../hooks/mutations/useLps.ts";
 import useTagManager from "../hooks/mutations/useTagManager.ts";
 import { handleFileChange } from "../utils/handleFileChange.ts";
+import TextInput from "./TextInput.tsx";
 
 export default function LpCreateModal({
   closeModal,
@@ -56,30 +57,30 @@ export default function LpCreateModal({
           className="hidden"
           onChange={(e) => handleFileChange(e, setThumbnail)}
         />
-        <input
-          type="text"
-          placeholder="LP Name"
-          value={name}
+        <TextInput
           onChange={(e) => setName(e.target.value)}
-          className="border border-gray-300 text-white rounded-md p-2 mb-4 w-full"
+          placeholder={"LP Name"}
+          type={"text"}
+          value={name}
+          className={`w-full mb-4`}
         />
-        <input
-          type="text"
-          placeholder="LP Content"
-          value={content}
+        <TextInput
           onChange={(e) => setContent(e.target.value)}
-          className="border border-gray-300 text-white rounded-md p-2 mb-4 w-full"
+          placeholder={"LP Content"}
+          type={"text"}
+          value={content}
+          className={`w-full mb-4`}
         />
-        <div className="flex justify-between gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="LP Tag"
-            value={tagInput}
+        <div className="flex gap-2 mb-4 items-center">
+          <TextInput
             onChange={(e) => setTagInput(e.target.value)}
-            className="border border-gray-300 text-white rounded-md p-2 w-full"
+            placeholder={"LP Tag"}
+            type={"text"}
+            value={tagInput}
+            className={`w-full`}
           />
           <button
-            className="bg-gray-400 text-white rounded-md px-4 py-2 hover:bg-pink-600"
+            className="bg-gray-400 text-white rounded-md p-2 hover:bg-pink-600"
             onClick={addTag}
           >
             Add

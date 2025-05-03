@@ -22,6 +22,7 @@ import { useDeleteLp, usePatchLp } from "../hooks/mutations/useLps.ts";
 import useTagManager from "../hooks/mutations/useTagManager.ts";
 import img_lp_black from "../assets/img_lp_black.png";
 import { handleFileChange } from "../utils/handleFileChange.ts";
+import TextInput from "../components/TextInput.tsx";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
@@ -158,12 +159,12 @@ export default function LpDetailPage() {
         </div>
         <div className="flex items-center justify-between gap-2 mt-6">
           {isEditMode ? (
-            <input
-              type="text"
-              placeholder="제목을 입력해주세요"
-              className="flex-1 h-10 border-1 border-gray-400 rounded-md px-4"
+            <TextInput
               onChange={(e) => setTitle(e.target.value)}
+              placeholder={"제목을 입력해주세요"}
+              type={"text"}
               value={title}
+              className={`w-full`}
             />
           ) : (
             <span className="text-2xl">{lpDetail?.data?.title}</span>
@@ -214,12 +215,12 @@ export default function LpDetailPage() {
           {isEditMode ? (
             <div className="flex-col w-full gap-2">
               <div className="flex items-center gap-2 mb-4">
-                <input
-                  type="text"
-                  placeholder="LP Tag"
-                  value={tagInput}
+                <TextInput
                   onChange={(e) => setTagInput(e.target.value)}
-                  className="flex-1 border border-gray-300 text-white rounded-md p-2"
+                  placeholder={"LP Tag"}
+                  type={"text"}
+                  value={tagInput}
+                  className={`flex-1`}
                 />
                 <button
                   className="bg-gray-400 text-white rounded-md px-4 py-2 hover:bg-pink-600"
@@ -283,13 +284,13 @@ export default function LpDetailPage() {
             />
           </div>
         </div>
-        <div className="flex justify-between items-center gap-2 mt-6">
-          <input
-            type="text"
-            placeholder="댓글을 입력해주세요"
-            className="flex-1 h-10 border-1 border-gray-400 rounded-md px-4"
+        <div className="flex items-center gap-2 mt-6">
+          <TextInput
             onChange={(e) => setComment(e.target.value)}
+            placeholder={"댓글을 입력해주세요"}
+            type={"text"}
             value={comment}
+            className={`flex-1`}
           />
           <button
             className="bg-gray-400 text-white rounded-md px-4 py-2"

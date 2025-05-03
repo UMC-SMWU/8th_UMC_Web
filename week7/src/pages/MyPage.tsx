@@ -6,6 +6,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { usePatchUser } from "../hooks/mutations/useUser.ts";
 import { handleFileChange } from "../utils/handleFileChange.ts";
+import TextInput from "../components/TextInput.tsx";
 
 export default function MyPage() {
   const [data, setData] = useState<ResponseMyInfoDto>();
@@ -64,19 +65,20 @@ export default function MyPage() {
         <span>이메일: {data?.data?.email}</span>
         {isEditMode ? (
           <>
-            <input
-              type="text"
-              value={nickname}
+            <TextInput
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="이름을 입력해주세요"
-              className="border border-gray-300 text-white rounded-md p-2 mb-4"
+              placeholder={"이름을 입력해주세요"}
+              type={"text"}
+              value={nickname}
+              className={`mb-4`}
             />
-            <input
-              type="text"
-              value={bio}
+
+            <TextInput
               onChange={(e) => setBio(e.target.value)}
-              placeholder="소개글을 입력해주세요"
-              className="border border-gray-300 text-white rounded-md p-2 mb-4"
+              placeholder={"소개글을 입력해주세요"}
+              type={"text"}
+              value={bio}
+              className={`mb-4`}
             />
           </>
         ) : (
