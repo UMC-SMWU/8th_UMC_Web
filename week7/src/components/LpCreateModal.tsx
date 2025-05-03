@@ -5,6 +5,8 @@ import { useLps } from "../hooks/mutations/useLps.ts";
 import useTagManager from "../hooks/mutations/useTagManager.ts";
 import { handleFileChange } from "../utils/handleFileChange.ts";
 import TextInput from "./TextInput.tsx";
+import EditTagItem from "./EditTagItem.tsx";
+import ThumbnailInput from "./ThumbnailInput.tsx";
 
 export default function LpCreateModal({
   closeModal,
@@ -43,19 +45,10 @@ export default function LpCreateModal({
         <button className="flex ml-auto" onClick={closeModal}>
           <X size={20} color="white" />
         </button>
-        <label htmlFor="thumbnail-input" className="cursor-pointer">
-          <img
-            src={thumbnail}
-            alt="LP Thumbnail"
-            className="size-70 mx-auto mb-4 rounded-full"
-          />
-        </label>
-        <input
-          id="thumbnail-input"
-          type="file"
-          accept="image/*"
-          className="hidden"
+        <ThumbnailInput
           onChange={(e) => handleFileChange(e, setThumbnail)}
+          thumbnail={thumbnail}
+          imgClassName={`size-70 rounded-full mb-4 mx-auto`}
         />
         <TextInput
           onChange={(e) => setName(e.target.value)}
@@ -88,18 +81,7 @@ export default function LpCreateModal({
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {tags.map((tag) => (
-            <div
-              key={tag}
-              className="flex items-center border-1 border-gray-400 text-white rounded-lg px-3 py-1"
-            >
-              <span>{tag}</span>
-              <button
-                className="ml-2 text-white"
-                onClick={() => removeTag(tag)}
-              >
-                <X size={16} color="white" />
-              </button>
-            </div>
+            <EditTagItem key={tag} tag={tag} onRemove={removeTag} />
           ))}
         </div>
         <button

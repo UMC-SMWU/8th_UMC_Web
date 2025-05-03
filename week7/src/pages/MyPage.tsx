@@ -7,6 +7,7 @@ import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { usePatchUser } from "../hooks/mutations/useUser.ts";
 import { handleFileChange } from "../utils/handleFileChange.ts";
 import TextInput from "../components/TextInput.tsx";
+import ThumbnailInput from "../components/ThumbnailInput.tsx";
 
 export default function MyPage() {
   const [data, setData] = useState<ResponseMyInfoDto>();
@@ -35,7 +36,6 @@ export default function MyPage() {
   useEffect(() => {
     const getData = async () => {
       const response = await getMyInfo();
-      console.log(response);
       setData(response);
       setNickname(response.data.name || "");
       setBio(response.data.bio || "");
@@ -48,19 +48,10 @@ export default function MyPage() {
   return (
     <div>
       <div className="flex flex-col gap-2 text-white items-center mt-20">
-        <label htmlFor="avatar-upload" className="cursor-pointer">
-          <img
-            src={avatar}
-            alt="프로필 이미지"
-            className="size-50 mb-10 rounded-full"
-          />
-        </label>
-        <input
-          id="avatar-upload"
-          type="file"
-          accept="image/*"
-          className="hidden"
+        <ThumbnailInput
           onChange={(e) => handleFileChange(e, setAvatar)}
+          thumbnail={avatar}
+          imgClassName={`size-50 mb-10 rounded-full object-cover`}
         />
         <span>이메일: {data?.data?.email}</span>
         {isEditMode ? (
@@ -72,7 +63,6 @@ export default function MyPage() {
               value={nickname}
               className={`mb-4`}
             />
-
             <TextInput
               onChange={(e) => setBio(e.target.value)}
               placeholder={"소개글을 입력해주세요"}

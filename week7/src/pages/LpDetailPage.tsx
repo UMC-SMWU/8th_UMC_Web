@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Heart, Pencil, Trash2, X } from "lucide-react";
+import { Heart, Pencil, Trash2 } from "lucide-react";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail";
 import formatDate from "../utils/formatDate";
 import SortButton from "../components/SortButton";
@@ -23,6 +23,9 @@ import useTagManager from "../hooks/mutations/useTagManager.ts";
 import img_lp_black from "../assets/img_lp_black.png";
 import { handleFileChange } from "../utils/handleFileChange.ts";
 import TextInput from "../components/TextInput.tsx";
+import TagItem from "../components/TagItem.tsx";
+import EditTagItem from "../components/EditTagItem.tsx";
+import ThumbnailInput from "../components/ThumbnailInput.tsx";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
@@ -178,24 +181,12 @@ export default function LpDetailPage() {
         <div className="flex justify-center mt-6">
           <div className="relative inline-flex justify-center items-center p-4 shadow-md shadow-black rounded-xl">
             <div className="absolute size-20 bg-white rounded-full z-10 border-2 border-gray-600" />
-            <img
-              src={thumbnail}
-              alt="Thumbnail"
-              className={`w-80 h-80 object-cover rounded-full border-4 border-black ${isEditMode ? "" : "animate-spin-slow"}`}
-              onClick={
-                isEditMode
-                  ? () => document.getElementById("thumbnailInput")?.click()
-                  : undefined
-              }
-            />
-            <input
-              id="thumbnailInput"
-              type="file"
-              accept="image/*"
-              className="hidden"
+            <ThumbnailInput
               onChange={(e) => {
                 handleFileChange(e, setThumbnail);
               }}
+              thumbnail={thumbnail}
+              imgClassName={`size-80 object-cover rounded-full border-4 border-black ${isEditMode ? "" : "animate-spin-slow"}`}
             />
           </div>
         </div>
@@ -231,30 +222,14 @@ export default function LpDetailPage() {
               </div>
               <div className="flex flex-wrap justify-center gap-2">
                 {tags.map((tag) => (
-                  <div
-                    key={tag}
-                    className="flex items-center border-1 border-gray-400 text-white rounded-lg px-3 py-1"
-                  >
-                    <span>{tag}</span>
-                    <button
-                      className="ml-2 text-white"
-                      onClick={() => removeTag(tag)}
-                    >
-                      <X size={16} color="white" />
-                    </button>
-                  </div>
+                  <EditTagItem key={tag} tag={tag} onRemove={removeTag} />
                 ))}
               </div>
             </div>
           ) : (
             <>
               {lpDetail?.data?.tags.map((tag) => (
-                <li
-                  key={tag.id}
-                  className="text-gray-200 text-sm bg-gray-700 rounded-xl px-3 py-0.5"
-                >
-                  #{tag.name}
-                </li>
+                <TagItem key={tag.id} name={tag.name} />
               ))}
             </>
           )}
