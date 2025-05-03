@@ -21,6 +21,7 @@ import {
 import { useDeleteLp, usePatchLp } from "../hooks/mutations/useLps.ts";
 import useTagManager from "../hooks/mutations/useTagManager.ts";
 import img_lp_black from "../assets/img_lp_black.png";
+import { handleFileChange } from "../utils/handleFileChange.ts";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
@@ -36,14 +37,12 @@ export default function LpDetailPage() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    refetch,
     isLoading,
   } = useGetInfiniteComments(lpId, order, 10);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState(img_lp_black);
-
   const { tags, tagInput, setTagInput, addTag, removeTag, setInitialTags } =
     useTagManager();
 
@@ -58,10 +57,6 @@ export default function LpDetailPage() {
 
   const { mutate: deleteLp } = useDeleteLp();
   const { mutate: patchLp } = usePatchLp();
-
-  const handleDeleteLp = () => {
-    deleteLp(lpId);
-  };
 
   const handlePatchLp = () => {
     patchLp({
@@ -102,10 +97,6 @@ export default function LpDetailPage() {
   const { mutate: deleteComment } = useDeleteComment();
   const { mutate: patchComment } = usePatchComment();
 
-  const handleOrderChange = (newOrder: PAGINATION_ORDER) => {
-    setOrder(newOrder);
-  };
-
   const handleCommentSubmit = () => {
     postComment({ lpId, requestPostCommentDto: { content: comment } });
     setComment("");
@@ -117,16 +108,6 @@ export default function LpDetailPage() {
 
   const handleCommentPatch = (commentId: number, content: string) => {
     patchComment({ lpId, commentId, requestPatchCommentDto: { content } });
-  };
-
-  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) setThumbnail(reader.result as string);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
   };
 
   const renderComments = () => {
@@ -152,10 +133,6 @@ export default function LpDetailPage() {
   };
 
   const { ref, inView } = useInView({ threshold: 1 });
-
-  useEffect(() => {
-    refetch();
-  }, [order, refetch]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
@@ -194,7 +171,7 @@ export default function LpDetailPage() {
 
           <div className="flex items-center gap-2">
             <Pencil color="#BDBDBD" size={20} onClick={handleEditMode} />
-            <Trash2 color="#BDBDBD" size={20} onClick={handleDeleteLp} />
+            <Trash2 color="#BDBDBD" size={20} onClick={() => deleteLp(lpId)} />
           </div>
         </div>
         <div className="flex justify-center mt-6">
@@ -215,7 +192,9 @@ export default function LpDetailPage() {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={handleThumbnailChange}
+              onChange={(e) => {
+                handleFileChange(e, setThumbnail);
+              }}
             />
           </div>
         </div>
@@ -293,13 +272,13 @@ export default function LpDetailPage() {
             <SortButton
               text="오래된순"
               selected={order === PAGINATION_ORDER.ASC}
-              onClick={() => handleOrderChange(PAGINATION_ORDER.ASC)}
+              onClick={() => setOrder(PAGINATION_ORDER.ASC)}
               position="left"
             />
             <SortButton
               text="최신순"
               selected={order === PAGINATION_ORDER.DESC}
-              onClick={() => handleOrderChange(PAGINATION_ORDER.DESC)}
+              onClick={() => setOrder(PAGINATION_ORDER.DESC)}
               position="right"
             />
           </div>

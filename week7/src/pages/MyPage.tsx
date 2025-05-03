@@ -5,6 +5,7 @@ import img_profile from "../assets/ic_signup_profile.svg";
 import { useAuthContext } from "../context/AuthContext";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { usePatchUser } from "../hooks/mutations/useUser.ts";
+import { handleFileChange } from "../utils/handleFileChange.ts";
 
 export default function MyPage() {
   const [data, setData] = useState<ResponseMyInfoDto>();
@@ -28,17 +29,6 @@ export default function MyPage() {
     };
     patchMyInfo(data);
     setIsEditMode(false);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatar(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   useEffect(() => {
@@ -69,7 +59,7 @@ export default function MyPage() {
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={handleFileChange}
+          onChange={(e) => handleFileChange(e, setAvatar)}
         />
         <span>이메일: {data?.data?.email}</span>
         {isEditMode ? (

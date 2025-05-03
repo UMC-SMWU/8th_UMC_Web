@@ -3,6 +3,7 @@ import img_lp_black from "../assets/img_lp_black.png";
 import { useState } from "react";
 import { useLps } from "../hooks/mutations/useLps.ts";
 import useTagManager from "../hooks/mutations/useTagManager.ts";
+import { handleFileChange } from "../utils/handleFileChange.ts";
 
 export default function LpCreateModal({
   closeModal,
@@ -14,19 +15,6 @@ export default function LpCreateModal({
   const [content, setContent] = useState<string>("");
   const { tags, tagInput, setTagInput, addTag, removeTag } = useTagManager();
   const { mutate } = useLps();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          setThumbnail(reader.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const submitLp = () => {
     mutate({
@@ -46,6 +34,7 @@ export default function LpCreateModal({
       className="fixed inset-0 flex bg-black/30 justify-center items-center z-50"
       onClick={closeModal}
     >
+      {/*모달창을 감싸는 컨테이너*/}
       <div
         className="bg-[#3e3f43] p-6 rounded-lg shadow-lg w-100"
         onClick={(e) => e.stopPropagation()}
@@ -65,7 +54,7 @@ export default function LpCreateModal({
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={handleFileChange}
+          onChange={(e) => handleFileChange(e, setThumbnail)}
         />
         <input
           type="text"
