@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import useGetLpList from "../hooks/queries/useGetLpList";
 import { PAGINATION_ORDER } from "../enums/common";
-import { IoMdHeart } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
 import { useInView } from "react-intersection-observer";
+import LpCard from "../components/LpCard/LpCard";
+import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,8 +16,8 @@ const HomePage = () => {
   //   order,
   // });
 
-  const {data: lps, isFetchingNextPage, hasNextPage, isLoading, fetchNextPage, isError} = 
-    useGetInfiniteLpList(5, search, PAGINATION_ORDER.desc);
+  const {data: lps, isFetching, hasNextPage, isLoading, fetchNextPage, isError} = 
+    useGetInfiniteLpList(3, search, order);
 
   // ref  특정 html 요소 감시 가능
   const {ref, inView} = useInView({
@@ -25,10 +25,10 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-    if(inView && hasNextPage && !isFetchingNextPage) {
+    if(inView && hasNextPage && !isFetching) {
       fetchNextPage();
     }
-  }, [inView, isFetchingNextPage, hasNextPage, fetchNextPage]);
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   const { getItem } = useLocalStorage("accessToken");
   const isAuthenticated = !!getItem();
@@ -42,10 +42,6 @@ const HomePage = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  };
-  
   if (isError) {
     return <div>Error...</div>;
   };
@@ -78,35 +74,15 @@ const HomePage = () => {
         </div>
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-2 px-4">
+        {isLoading && <LpCardSkeletonList count={10} />}
         {lps?.pages?.map((page) => page.data.data)
           ?.flat()
           ?.map((lp) => (
-            <div 
-              key={lp.id}
-              className="relative w-full pb-[100%] rounded overflow-hidden group 
-              hover:scale-120 transition-transform duration-300 hover:z-10"
-              onClick={() => handleCardClick(lp.id)}
-            >
-              <img
-                src={lp.thumbnail}
-                alt={lp.title}
-                className="absolute top-0 left-0 w-full h-full object-cover bg-gray-300"
-              />
-
-              <div 
-                className="absolute top-0 left-0 w-full h-full bg-black/50 flex flex-col 
-                justify-end p-2 gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              >
-                <h3 className="text-white text-md font-bold">{lp.title}</h3>
-                <div className="flex justify-between text-gray-300 text-sm w-full ">
-                  <p>{lp.createdAt.split("T")[0]}</p>
-                  <p className="flex items-center gap-1"> <IoMdHeart /> {lp.likes.length}</p>
-                </div>
-              </div>
-            </div>
+            <LpCard key={lp.id} lp={lp} onClick={handleCardClick} />
         ))}
+        {/* {isFetching && <LpCardSkeletonList count={20} />} */}
+        <div ref={ref}>{isFetching && <LpCardSkeletonList count={5} />}</div>
       </div>
-      <div ref={ref}>{isFetchingNextPage && <div>Loading...</div>}</div>
     </div>
   )
 }
