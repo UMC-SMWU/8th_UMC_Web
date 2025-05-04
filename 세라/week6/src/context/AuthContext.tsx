@@ -7,6 +7,7 @@ import { postLogin, postLogout } from "../api/AuthService";
 interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
+  nickname: string | null;
   login: (requestLoginDto: RequestLoginDto) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -14,6 +15,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   accessToken: null,
   refreshToken: null,
+  nickname: null,
   login: async () => {},
   logout: async () => {},
 });
@@ -29,6 +31,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     getItem: getRefreshToken,
     removeItem: removeRefreshToken,
   } = useLocalStorage(LOCAL_STORAGE_KEY.refreshToken);
+  const {
+    setItem: setNickname,
+    getItem: getNickname,
+    removeItem: removeNickname,
+  } = useLocalStorage(LOCAL_STORAGE_KEY.nickname);
 
   const login = async (requestLoginDto: RequestLoginDto) => {
     try {
@@ -36,6 +43,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (data) {
         setAccessToken(data.accessToken);
         setRefreshToken(data.refreshToken);
+        setNickname(data.name);
         alert("로그인 성공");
         window.location.href = "/mypage";
       }
@@ -50,6 +58,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       await postLogout();
       removeAccessToken();
       removeRefreshToken();
+      removeNickname();
       alert("로그아웃 성공");
       window.location.href = "/login";
     } catch (error) {
@@ -63,6 +72,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       value={{
         accessToken: getAccessToken(),
         refreshToken: getRefreshToken(),
+        nickname: getNickname(),
         login,
         logout,
       }}
