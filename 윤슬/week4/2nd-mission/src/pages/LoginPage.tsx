@@ -77,7 +77,6 @@ const LoginPage = () => {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              disabled={isDisabled}
               className="w-full bg-white border border-gray-300 text-black py-3 rounded-md text-lg font-medium hover:bg-gray-100 transition-colors disabled:bg-gray-300 disabled:text-white disabled:cursor-not-allowed"
             >
               <div className="flex items-center justify-center gap-2">
