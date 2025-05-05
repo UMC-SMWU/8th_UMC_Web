@@ -1,15 +1,19 @@
 import { useParams } from "react-router-dom";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail";
-import { IoMdHeart } from "react-icons/io";
 import useGetLpComment from "../hooks/queries/useGetCommentList";
 import { PAGINATION_ORDER } from "../enums/common";
 import LpComment from "../components/comments/LpComment";
+import { IoPencilOutline, IoTrashBin } from "react-icons/io5";
+import { MdPerson } from "react-icons/md";
+import { useState } from "react";
 
 const LpDetailPage = () => {
     const { lpId } = useParams();
+    const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
     const { data, isError, isLoading } = useGetLpDetail(Number(lpId));
-    const { data: comments } = useGetLpComment(Number(lpId), { order: PAGINATION_ORDER.desc });
+    const { data: comments } = useGetLpComment(Number(lpId), { order: order });
 
+    
     console.log('comments:', comments);
     console.log('comments.data:', comments?.data);
     if (isLoading) {
@@ -20,22 +24,47 @@ const LpDetailPage = () => {
       return <div>Error...</div>;
     };
     
-    // console.log('data:', data);
+    console.log('data:', data);
 
     return (
-      <div className="p-5 flex flex-col items-center text-white min-h-screen ">
-        <h1 className="text-3xl font-bold mb-4">{data.data.title}</h1>
-        <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-gray-700 animate-spin-slow">
+      <div className="w-10/12 mx-auto mt-10">
+      <div className="p-5 flex flex-col items-center justify-center text-white min-h-screen">
+        <div className="flex items-center justify-around w-full mb-4">
+          <div className="flex items-center gap-4">
+            <div className="w-6 h-6 rounded-full text-xl flex justify-center bg-gray-700 text-gray-300">
+              {data.data.author.avatar ? (
+                <img 
+                  src={data.data.author.avatar} 
+                  alt={data.data.author.name} 
+                />
+              ) : (
+                <MdPerson />
+              )}
+            </div>
+            <div> {data.data.author.name} </div>
+          </div>
+          <div>
+            {data.data.createdAt.split("T")[0]}
+          </div>
+        </div>
+        <div className="flex items-center justify-around w-full gap-4 mb-4">
+          <h1 className="text-3xl font-bold mb-4">{data.data.title}</h1>
+          <div className="flex items-center gap-4">
+            <div className="text-xl"> <IoPencilOutline /> </div>
+            <div className="text-xl"> <IoTrashBin /> </div>
+          </div>
+        </div>
+        <div className="relative w-128 h-128 rounded-full overflow-hidden border-4 border-gray-700 animate-spin-slow">
           <img
             src={data.data.thumbnail}
             alt={data.data.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-1/2 left-1/2 w-10 h-10 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
         </div>
-  
-        <p className="text-center text-gray-300 mt-6 px-4">{data.data.content}</p>
-  
+        <div className="w-3/4">
+          <p className="text-center text-gray-300 mt-6 px-4 w-full">{data.data.content}</p>
+        </div>
         <div className="flex flex-wrap gap-2 mt-4">
           {data.data.tags.map((tag) => (
             <span
@@ -46,22 +75,53 @@ const LpDetailPage = () => {
             </span>
           ))}
         </div>
-  
-        <div className="flex items-center gap-2 mt-6">
-          <span className="text-pink-500 text-2xl"><IoMdHeart /></span>
-          <span className="text-gray-300 text-lg">{data.data.likes.length}</span>
+        <div className="flex items-center justify-between w-full mt-4 mb-4">
+          <div>댓글</div>
+          <div className="flex border border-gray-300 rounded overflow-hidden text-sm font-bold">
+          <button
+            className={`px-4 py-2 text-center w-30 ${
+              order === PAGINATION_ORDER.asc
+              ? "bg-white text-black"
+              : "bg-black text-white"
+            }`}
+            onClick={() => setOrder(PAGINATION_ORDER.asc)}
+          >
+            오래된 순
+          </button>
+          <button
+            className={`px-4 py-2 text-center w-30 ${
+              order === PAGINATION_ORDER.asc
+                ? "bg-black text-white"
+                : "bg-white text-black"
+            }`}
+            onClick={() => setOrder(PAGINATION_ORDER.desc)}
+          >
+            최신순
+          </button>
         </div>
-        <div>댓글</div>
-        <div>최신순 오래된순</div>
-        <div>입력창</div>
-        <div>목록</div>
-        <div>
+        </div>
+        <div className="flex items-center w-full m-2 gap-2">
+          <input
+            type="text"
+            placeholder="댓글을 입력하세요..."
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+          <button
+            className="px-4 py-2 bg-blue-500 text-white font-bold rounded-r-md hover:bg-blue-600 transition-colors duration-200"
+            onClick={() => {
+              // 작성 버튼 클릭 시 동작
+              console.log("댓글 작성 버튼 클릭");
+            }}
+          >
+            작성
+          </button>
+        </div>
+      <div className="w-full mt-2">
         {comments?.data.map((comment) => (
-            <LpComment key={comment.id} comment={comment} />
-          ))}{comments?.data.map((comment) => (
-            <LpComment key={comment.id} comment={comment} />
-          ))}
+          <LpComment key={comment.id} comment={comment} />
+        ))}
         </div>
+      </div>
       </div>
     );
 }

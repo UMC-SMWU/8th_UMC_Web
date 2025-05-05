@@ -31,7 +31,7 @@ export type Author = {
     name: string;
     email: string;
     bio: string | null;
-    avatar: string | null;
+    avatar: string;
     createdAt: string;
     updatedAt: string;
 };
@@ -45,7 +45,7 @@ export type ResponseLpDetailDto = CommonResponse<{
         authorId: number;
         createdAt: string;
         updatedAt: string;
-        author: Author[];
+        author: Author;
         tags: Tag[];
         likes: Likes[];
 }>;
@@ -57,7 +57,7 @@ export type LpComment = {
     authorId: number;
     createdAt: string;
     updatedAt: string;
-    author: Author[];
+    author: Author;
 };
 
 export type ResponseLpCommentListDto = CurserBasedResponse<LpComment[]>;

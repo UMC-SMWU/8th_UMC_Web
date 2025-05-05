@@ -51,11 +51,11 @@ const HomePage = () => {
       <input value={search} onChange={(e) => setSearch(e.target.value)} />
       <div className="flex justify-end mb-4">
         <div className="flex border border-gray-300 rounded overflow-hidden text-sm font-bold">
-          <button
+        <button
             className={`px-4 py-2 text-center w-30 ${
               order === PAGINATION_ORDER.asc
-                ? "bg-black text-white"
-                : "bg-white text-black"
+              ? "bg-white text-black"
+              : "bg-black text-white"
             }`}
             onClick={() => setOrder(PAGINATION_ORDER.asc)}
           >
@@ -63,7 +63,7 @@ const HomePage = () => {
           </button>
           <button
             className={`px-4 py-2 text-center w-30 ${
-              order === PAGINATION_ORDER.desc
+              order === PAGINATION_ORDER.asc
                 ? "bg-black text-white"
                 : "bg-white text-black"
             }`}
