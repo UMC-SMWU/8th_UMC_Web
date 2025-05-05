@@ -10,7 +10,8 @@ import { Plus } from "lucide-react";
 import LpCreateModal from "../components/LpCreateModal.tsx";
 import TextInput from "../components/TextInput.tsx";
 import useDebounce from "../hooks/useDebounce.ts";
-import { DEBOUNCE_SEARCH_DELAY } from "../constants/delay.ts";
+import { DEBOUNCE_SEARCH_DELAY, THROTTLE_DELAY } from "../constants/delay.ts";
+import useThrottle from "../hooks/useThrottle.ts";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -26,36 +27,25 @@ export default function HomePage() {
     setIsModalOpen(false);
   };
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    refetch,
-    isLoading,
-  } = useGetInfiniteLps(debouncedSearch, order, 10);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useGetInfiniteLps(debouncedSearch, order, 10);
 
   const { ref, inView } = useInView({
     threshold: 1,
   });
 
-  useEffect(() => {
-    refetch();
-  }, [order, refetch]);
-
-  useEffect(() => {
+  const handleScroll = useThrottle(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, THROTTLE_DELAY);
 
-  const handleOrderChange = (newOrder: PAGINATION_ORDER) => {
-    setOrder(newOrder);
-  };
-
-  const handleItemClick = (id: number) => {
-    navigate(`/lp/${id}`);
-  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   const renderItems = () => {
     if (isLoading) {
@@ -76,7 +66,7 @@ export default function HomePage() {
           thumbnail={lp.thumbnail}
           createdAt={lp.createdAt}
           likes={lp.likes.length}
-          onClick={() => handleItemClick(lp.id)}
+          onClick={() => navigate(`/lp/${lp.id}`)}
         />
       )),
     );
@@ -100,13 +90,13 @@ export default function HomePage() {
         <SortButton
           text="오래된순"
           selected={order === PAGINATION_ORDER.ASC}
-          onClick={() => handleOrderChange(PAGINATION_ORDER.ASC)}
+          onClick={() => setOrder(PAGINATION_ORDER.ASC)}
           position="left"
         />
         <SortButton
           text="최신순"
           selected={order === PAGINATION_ORDER.DESC}
-          onClick={() => handleOrderChange(PAGINATION_ORDER.DESC)}
+          onClick={() => setOrder(PAGINATION_ORDER.DESC)}
           position="right"
         />
       </div>
