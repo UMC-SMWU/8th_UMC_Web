@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { Lp } from "../types/lp";
-import { timeAgo } from "../utils/timeAgo";
+import { useAuth } from "../../context/AuthContext";
+import { Lp } from "../../types/lp";
+import { timeAgo } from "../../utils/timeAgo";
 
 interface LpCardProps {
   lp: Lp;

@@ -4,6 +4,7 @@ import { getLpDetail } from "../apis/lp";
 import { ResponseLpDetailDto } from "../types/lp";
 import { timeAgo } from "../utils/timeAgo";
 import { Pencil, Trash2 } from "lucide-react";
+import CommentSection from "../components/Comment/CommentSection";
 
 const LpDetailPage = () => {
   const { LPid } = useParams();
@@ -22,7 +23,7 @@ const LpDetailPage = () => {
   const lp = response.data;
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-start justify-center pt-24 px-4">
+    <div className="min-h-screen bg-black text-white flex items-start justify-center pt-24 px-4 pb-40">
       <div className="bg-[#1e1e1e] rounded-2xl p-6 w-full max-w-xl shadow-xl relative">
         {/* 작성자 + 수정 삭제 */}
         <div className="flex justify-between items-start mb-2">
@@ -77,6 +78,10 @@ const LpDetailPage = () => {
         {/* 좋아요 */}
         <div className="flex justify-center">
           <button className="text-pink-400 text-lg">❤️ {lp.likes.length}</button>
+        </div>
+
+        <div className="mt-10 px-4 max-w-xl mx-auto">
+          <CommentSection lpId={lp.id} />
         </div>
       </div>
     </div>

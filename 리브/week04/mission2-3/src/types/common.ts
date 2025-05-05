@@ -11,9 +11,10 @@ export type CursorBasedResponse<T>={
   status: boolean;
   statusCode: number;
   message: string;
-  data:T;
-  nextCursor: number;
-  hasNext: boolean;
+  data:T & {
+    nextCursor: number | null;
+    hasNext: boolean;
+  };  
 };
 
 
@@ -23,5 +24,21 @@ export type PaginationDto={
   search?: string;
   order?: PAGINATION_ORDER;
 };
+
+export interface Comment {
+  id: number;
+  content: string;
+  createdAt: string;
+  author: {
+    name: string;
+  };
+}
+
+export interface ResponseCommentListDto {
+  data: {
+    data: Comment[];
+    nextCursor: number | null;
+  };
+}
 
   
