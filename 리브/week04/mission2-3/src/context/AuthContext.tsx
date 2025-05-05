@@ -8,6 +8,7 @@ import { RequestSigninDto } from "../types/auth";
 interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
+  user: {name: string} | null;
   login: (signinData: RequestSigninDto) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -15,6 +16,7 @@ interface AuthContextType {
 export const AuthContext: React.Context<AuthContextType> = createContext<AuthContextType>({
   accessToken: null,  
   refreshToken: null, 
+  user: null,
   login: async () => {},  
   logout: async () => {},  
 });
@@ -31,19 +33,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [accessToken, setAccessToken] = useState<string | null>(getAccessTokenFromStorage());
   const [refreshToken, setRefreshToken] = useState<string | null>(getRefreshTokenFromStorage());
 
+  const [user, setUser] = useState<{ name: string } | null>(null);
+
   const login = async (signinData: RequestSigninDto): Promise<void> => {
     try {
       const data: ResponseSigninDto = await postSignin(signinData);
 
       if (data) {
-        const newAccessToken: string = data.data.accessToken;
-        const newRefreshToken: string = data.data.refreshToken;
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken, name } = data.data;
 
         setAccessTokenInStorage(newAccessToken);
         setRefreshTokenInStorage(newRefreshToken);
 
         setAccessToken(newAccessToken);
         setRefreshToken(newRefreshToken);
+        setUser({ name });
 
         alert("로그인 성공");
       }
@@ -60,6 +64,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       setAccessToken(null);
       setRefreshToken(null);
+      setUser(null);
 
       alert("로그아웃 성공");
     } catch (error) {
@@ -69,7 +74,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ accessToken, refreshToken, login, logout }}>
+    <AuthContext.Provider value={{ accessToken, refreshToken, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

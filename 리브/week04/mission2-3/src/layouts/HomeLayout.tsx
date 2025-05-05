@@ -1,15 +1,22 @@
+import { useState } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
+import Footer from "../components/Footer";
 
-const HomeLayout =()=>{
-    return (
-      <div className="h-dvh flex flex-col">
-        <nav> 네비게이션 바 입니다.</nav>
-        <main className="flex-1">
-            <Outlet />
-        </main>
-        <footer>푸터</footer>
-      </div>
-    );
+const HomeLayout = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <div className="h-screen bg-black text-white">
+      <Navbar toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+      <main className="pt-16 px-4 min-h-screen bg-black">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
 };
 
 export default HomeLayout;
