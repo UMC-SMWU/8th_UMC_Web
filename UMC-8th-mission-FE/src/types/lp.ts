@@ -49,3 +49,15 @@ export type ResponseLpDetailDto = CommonResponse<{
         tags: Tag[];
         likes: Likes[];
 }>;
+
+export type LpComment = {
+    id: number;
+    content: string;
+    lpId: number;
+    authorId: number;
+    createdAt: string;
+    updatedAt: string;
+    author: Author[];
+};
+
+export type ResponseLpCommentListDto = CurserBasedResponse<LpComment[]>;
