@@ -26,6 +26,8 @@ import TextInput from "../components/TextInput.tsx";
 import TagItem from "../components/TagItem.tsx";
 import EditTagItem from "../components/EditTagItem.tsx";
 import ThumbnailInput from "../components/ThumbnailInput.tsx";
+import useThrottle from "../hooks/useThrottle.ts";
+import { THROTTLE_DELAY } from "../constants/delay.ts";
 
 export default function LpDetailPage() {
   const lpId = Number(useParams().lpId);
@@ -138,9 +140,18 @@ export default function LpDetailPage() {
 
   const { ref, inView } = useInView({ threshold: 1 });
 
+  const handleScroll = useThrottle(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, THROTTLE_DELAY);
+
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <>
