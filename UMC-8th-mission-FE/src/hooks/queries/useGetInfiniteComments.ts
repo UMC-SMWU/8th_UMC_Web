@@ -1,17 +1,19 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getLpList } from "../../apis/lp";
 import { PAGINATION_ORDER } from "../../enums/common";
 import { QUERY_KEY } from "../../constants/key";
+import { getLpCommentList } from "../../apis/comment";
 
-function useGetInfiniteLpList(
-    limit: number, 
-    search: string, 
-    order: PAGINATION_ORDER
+function useGetInfiniteComments(
+    lpId: number,
+    limit: number,
+    order: PAGINATION_ORDER,
 ) {
-  return useInfiniteQuery({
-        queryKey: [QUERY_KEY.lps, search, order],
-        queryFn: ({pageParam = 0}) => 
-            getLpList({cursor: pageParam, limit, search, order}),
+    return useInfiniteQuery({
+        queryKey: [QUERY_KEY.lpId, order],
+        queryFn: ({ pageParam = 0 }) => getLpCommentList(
+            lpId,
+            { cursor: pageParam, limit, order }
+        ),
         // initialPageParam: 0,
         getNextPageParam: (lastPage) => {
             console.log(lastPage);
@@ -23,4 +25,4 @@ function useGetInfiniteLpList(
     });
 }
 
-export default useGetInfiniteLpList;
+export default useGetInfiniteComments;

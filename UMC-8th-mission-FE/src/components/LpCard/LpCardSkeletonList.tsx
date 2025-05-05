@@ -2,7 +2,6 @@ import LpCardSkeleton from "./LpCardSkeleton";
 
 interface LpCardSkeletonListProps {
     count: number;
-
 }
 
 const LpCardSkeletonList = ({count} : LpCardSkeletonListProps) => {
@@ -15,4 +14,4 @@ const LpCardSkeletonList = ({count} : LpCardSkeletonListProps) => {
   )
 }
 
-export default LpCardSkeletonList
+export default LpCardSkeletonList;

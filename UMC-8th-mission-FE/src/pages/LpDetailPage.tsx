@@ -1,21 +1,33 @@
 import { useParams } from "react-router-dom";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail";
-import useGetLpComment from "../hooks/queries/useGetCommentList";
 import { PAGINATION_ORDER } from "../enums/common";
 import LpComment from "../components/comments/LpComment";
 import { IoPencilOutline, IoTrashBin } from "react-icons/io5";
 import { MdPerson } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import LpCommentSkeleton from "../components/comments/LpCommentSkeleton";
+import useGetInfiniteComments from "../hooks/queries/useGetInfiniteComments";
+import { useInView } from "react-intersection-observer";
+import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 
 const LpDetailPage = () => {
     const { lpId } = useParams();
     const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
     const { data, isError, isLoading } = useGetLpDetail(Number(lpId));
-    const { data: comments } = useGetLpComment(Number(lpId), { order: order });
+    // const { data: comments } = useGetLpComment(Number(lpId), { order: order });
+    const { data: comments, isFetching, hasNextPage, fetchNextPage } = 
+      useGetInfiniteComments(Number(lpId), 3, order);
+    const { ref, inView } = useInView({
+      threshold: 0,
+    });
 
-    
+    useEffect(() => {
+      if (inView && hasNextPage && !isFetching) {
+        fetchNextPage();
+      }
+    }, [inView, isFetching, hasNextPage, fetchNextPage]);
+
     console.log('comments:', comments);
-    console.log('comments.data:', comments?.data);
     if (isLoading) {
       return <div>Loading...</div>;
     };
@@ -117,9 +129,15 @@ const LpDetailPage = () => {
           </button>
         </div>
       <div className="w-full mt-2">
-        {comments?.data.map((comment) => (
+        {/* {comments?.data.map((comment) => (
           <LpComment key={comment.id} comment={comment} />
-        ))}
+        ))} */}
+        {comments?.pages?.map((page) => page.data.data)
+          ?.flat()
+          ?.map((comment) => (
+            <LpComment key={comment.id} comment={comment} />
+          ))}
+          <div ref={ref}>{isFetching && <LpCardSkeletonList count={5} />}</div>
         </div>
       </div>
       </div>
