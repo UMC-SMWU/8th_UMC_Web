@@ -8,9 +8,14 @@ import { useInView } from "react-intersection-observer";
 import LpItemSkeleton from "../components/LpItemSkeleton";
 import { Plus } from "lucide-react";
 import LpCreateModal from "../components/LpCreateModal.tsx";
+import TextInput from "../components/TextInput.tsx";
+import useDebounce from "../hooks/useDebounce.ts";
+import { DEBOUNCE_SEARCH_DELAY } from "../constants/delay.ts";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, DEBOUNCE_SEARCH_DELAY);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.ASC);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => {
@@ -28,7 +33,7 @@ export default function HomePage() {
     isFetchingNextPage,
     refetch,
     isLoading,
-  } = useGetInfiniteLps("", order, 10);
+  } = useGetInfiniteLps(debouncedSearch, order, 10);
 
   const { ref, inView } = useInView({
     threshold: 1,
@@ -73,12 +78,24 @@ export default function HomePage() {
           likes={lp.likes.length}
           onClick={() => handleItemClick(lp.id)}
         />
-      ))
+      )),
     );
   };
 
   return (
     <div className="flex flex-col px-10">
+      <div className={`flex justify-between items-center gap-4`}>
+        <TextInput
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={"검색어를 입력하세요"}
+          type={"text"}
+          value={search}
+          className={`flex-1`}
+        />
+        <button className={`text-white bg-pink-600 py-2 px-4 rounded-md`}>
+          검색
+        </button>
+      </div>
       <div className="flex justify-end items-center mt-4 p-6">
         <SortButton
           text="오래된순"
