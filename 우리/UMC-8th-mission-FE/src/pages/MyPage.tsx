@@ -14,6 +14,8 @@ const MyPage = () => {
         getData();
     },[]);
 
+    localStorage.setItem("myName", data?.data.name || "");
+
     return (
         <>
             <div className="flex items-center justify-center w-40 h-40 rounded-full bg-[#aed3fd] m-4">
