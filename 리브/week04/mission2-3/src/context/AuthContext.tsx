@@ -4,11 +4,12 @@ import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { postSignin, postLogout } from "../apis/auth";  
 import { ResponseSigninDto } from "../types/auth";  
 import { RequestSigninDto } from "../types/auth";
+import { User } from "../types/auth";
 
 interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
-  user: {name: string} | null;
+  user: User | null;
   login: (signinData: RequestSigninDto) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -33,21 +34,28 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [accessToken, setAccessToken] = useState<string | null>(getAccessTokenFromStorage());
   const [refreshToken, setRefreshToken] = useState<string | null>(getRefreshTokenFromStorage());
 
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (signinData: RequestSigninDto): Promise<void> => {
     try {
       const data: ResponseSigninDto = await postSignin(signinData);
 
       if (data) {
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken, name } = data.data;
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken, id, name } = data.data;
 
         setAccessTokenInStorage(newAccessToken);
         setRefreshTokenInStorage(newRefreshToken);
 
         setAccessToken(newAccessToken);
         setRefreshToken(newRefreshToken);
-        setUser({ name });
+        setUser({ 
+          id,
+          name,
+          bio: null,
+          avatar: null,
+          createdAt: "",
+          updatedAt: "",
+         });
 
         alert("로그인 성공");
       }

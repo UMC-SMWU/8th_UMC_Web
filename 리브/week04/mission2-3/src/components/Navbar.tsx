@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLogout } from "../hooks/mutations/useLogout";
 
 interface NavbarProps {
   toggleSidebar: () => void;
 }
 
 const Navbar = ({ toggleSidebar }: NavbarProps) => {
-  const { accessToken, user, logout } = useAuth();
+  const { accessToken, user } = useAuth();
+  const { mutate: logoutMutate, isPending } = useLogout();
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-black text-white flex items-center justify-between px-4 py-3 shadow">
@@ -26,7 +28,8 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
           <>
             <span>{user?.name}님 반갑습니다.</span>
             <button
-              onClick={logout}
+              onClick={() => logoutMutate()}
+              disabled={isPending}
               className="hover:text-pink-400 transition-colors"
             >
               로그아웃
@@ -51,5 +54,6 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
 };
 
 export default Navbar;
+
 
 

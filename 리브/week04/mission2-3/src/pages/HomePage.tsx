@@ -4,6 +4,8 @@ import { PAGINATION_ORDER } from "../enums/common";
 import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
 import LpCard from "../components/LpCard/LpCard";
 import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
+import LpModal from "../components/LpModal"; 
+import { useUploadLp } from "../hooks/mutations/useUploadLp";  
 
 
 const convertOrderToApi = (order: "new" | "old"): PAGINATION_ORDER =>
@@ -11,6 +13,8 @@ const convertOrderToApi = (order: "new" | "old"): PAGINATION_ORDER =>
 
 const HomePage = () => {
   const [order, setOrder] = useState<"new" | "old">("new");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { mutate: uploadLp } = useUploadLp();
 
   const {
     data,
@@ -36,6 +40,19 @@ const HomePage = () => {
 
   return (
     <div className="p-4">
+      <LpModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={({ name, content, tags }) =>
+          uploadLp({
+            name,
+            content,
+            tags,
+            thumbnail: "https://example.com/default.png", // 나중에 이미지 업로드 API 생기면 수정
+          })
+        }
+      />
+
       <div className="flex justify-end mb-4 gap-2">
         <button
           onClick={() => setOrder("old")}
@@ -60,6 +77,14 @@ const HomePage = () => {
 
       {/* 스크롤 관찰용 div */}
       <div ref={ref} className="h-10" />
+
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-20 right-6 p-4 bg-pink-500 text-white text-3xl rounded-full shadow-lg hover:bg-pink-600 transition"
+      >
+        +
+      </button>
+      
     </div>
   );
 };

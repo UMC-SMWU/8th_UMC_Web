@@ -5,10 +5,12 @@ import { FaGoogle } from "react-icons/fa";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { useAuth } from "../context/AuthContext";  
 import { useEffect } from "react";  
+import { useLogin } from "../hooks/mutations/useLogin";
 
 const LoginPage = () => {
   const {login, accessToken}=useAuth();
   const navigate = useNavigate();
+  const { mutateAsync: loginMutate } = useLogin();
 
   useEffect(() => {
     if (accessToken) {
@@ -32,10 +34,11 @@ const LoginPage = () => {
     },
   });
 
-  const values = watch();  // watch를 사용해 값을 가져옴
+  const values = watch();  
 
   const onSubmit = async () => {
     try {
+      await loginMutate(values);
       await login(values);
       navigate("/my");
     } catch (error) {

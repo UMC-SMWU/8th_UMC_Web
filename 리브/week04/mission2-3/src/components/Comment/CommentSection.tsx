@@ -30,8 +30,8 @@ const CommentSection = ({ lpId }: CommentSectionProps) => {
         </div>
       </div>
 
-      {/* 작성란 (기능 없음) */}
-      <CommentInput />
+      {/* 작성란 */}
+      <CommentInput lpId={lpId} />
 
       {/* 댓글 리스트 */}
       <CommentList lpId={lpId} order={order} />

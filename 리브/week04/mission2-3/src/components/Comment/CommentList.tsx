@@ -29,12 +29,7 @@ const CommentList = ({ lpId, order }: { lpId: number; order: "asc" | "desc" }) =
     <div className="mt-6">
       {data?.pages.map((page) =>
         page.data.data.map((comment: Comment) => (
-          <CommentItem
-            key={comment.id}
-            author={comment.author.name}
-            content={comment.content}
-            createdAt={comment.createdAt}
-          />
+          <CommentItem key={comment.id} comment={comment} lpId={lpId} />
         ))
       )}
       {isFetchingNextPage && <CommentSkeleton />}

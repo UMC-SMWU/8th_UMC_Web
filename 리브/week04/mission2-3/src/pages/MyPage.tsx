@@ -1,56 +1,118 @@
-import { useEffect, useState } from "react";
-import { getMyInfo } from "../apis/auth";  // API 호출 함수
-import { ResponseMyInfoDto } from "../types/auth";  // 타입 정의
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";  // AuthContext를 통한 로그인 상태 확인
+import { useAuth } from "../context/AuthContext";
+import { useUpdateMyInfo } from "../hooks/mutations/useUpdateMyInfo";
+import { useGetMyInfo } from "../hooks/queries/useGetMyInfo";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const { logout, accessToken } = useAuth();  // accessToken과 logout 함수 가져오기
-  const [data, setData] = useState<ResponseMyInfoDto | null>(null);
+  const { logout } = useAuth();
 
-  // useEffect 훅을 사용하여 컴포넌트가 마운트될 때 유저 정보를 불러옵니다.
-  useEffect(() => {
-    const getData = async () => {
-      if (!accessToken) {
-        // 로그인 상태가 아니라면 로그인 페이지로 리디렉션
-        navigate("/login");
-        return;
-      }
+  const { data, isLoading } = useGetMyInfo();
+  const { mutate: updateMyInfo } = useUpdateMyInfo();
 
-      try {
-        // API 호출로 유저 정보 가져오기
-        const response = await getMyInfo();
-        console.log("내 정보", response);
-        setData(response);  // 유저 정보 상태에 저장
-      } catch (error) {
-        console.error("정보 가져오기 실패", error);
-        alert("정보를 가져오는 데 실패했습니다.");
-      }
-    };
-    getData();
-  }, [accessToken, navigate]);  // `accessToken`이 변할 때마다 다시 실행
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [avatar, setAvatar] = useState("");
 
-  // 로그아웃 처리 함수
+  const user = data?.data;
+
+  // 첫 로딩 시 초기값 세팅
+  useState(() => {
+    if (user) {
+      setName(user.name);
+      setBio(user.bio || "");
+      setAvatar(user.avatar || "");
+    }
+  });
+
   const handleLogout = async () => {
-    await logout();  // 로그아웃
-    navigate("/");  // 홈 페이지로 리디렉션
+    await logout();
+    navigate("/");
   };
 
-  // 로딩 중일 때 화면
-  if (!data) return <div className="text-white">로딩 중...</div>;
+  const handleSubmit = () => {
+    if (!name.trim()) {
+      alert("닉네임은 비워둘 수 없습니다.");
+      return;
+    }
+
+    updateMyInfo(
+      { name, bio, avatar },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      }
+    );
+  };
+
+  if (isLoading || !user) return <div className="text-white">로딩 중...</div>;
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-black text-white">
       <div className="flex flex-col items-center space-y-4">
         <img
-          src={data.data?.avatar as string}
+          src={avatar || "/default-profile.png"}
           alt="프로필 이미지"
           className="w-40 h-40 rounded-full object-cover"
         />
-        <div className="text-lg">{data.data?.email}</div>
-        <div className="text-2xl font-bold">{data.data?.name}</div>
-  
+        <div className="text-lg">{user.email}</div>
+
+        {isEditing ? (
+          <>
+            <input
+              className="p-2 rounded bg-gray-800 border border-gray-600 text-white w-72 text-center"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="닉네임"
+            />
+            <input
+              className="p-2 rounded bg-gray-800 border border-gray-600 text-white w-72 text-center"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="자기소개 (선택)"
+            />
+            <input
+              className="p-2 rounded bg-gray-800 border border-gray-600 text-white w-72 text-center"
+              value={avatar}
+              onChange={(e) => setAvatar(e.target.value)}
+              placeholder="프로필 이미지 URL (선택)"
+            />
+            <div className="flex gap-4 mt-2">
+              <button
+                className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded font-bold"
+                onClick={handleSubmit}
+              >
+                저장
+              </button>
+              <button
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded font-bold"
+                onClick={() => {
+                  setIsEditing(false);
+                  setName(user.name);
+                  setBio(user.bio || "");
+                  setAvatar(user.avatar || "");
+                }}
+              >
+                취소
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-2xl font-bold">{user.name}</div>
+            <p className="text-sm text-gray-400">{user.bio}</p>
+            <button
+              className="px-4 py-2 mt-2 border border-white rounded hover:bg-white hover:text-black transition"
+              onClick={() => setIsEditing(true)}
+            >
+              설정
+            </button>
+          </>
+        )}
+
         <button
           className="mt-6 px-6 py-2 bg-pink-500 hover:bg-pink-700 rounded-md text-white font-semibold"
           onClick={handleLogout}
