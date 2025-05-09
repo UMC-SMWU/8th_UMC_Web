@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { deleteLike } from "../../apis/lp";
+import { deleteLike } from "../../apis/lpdetail";
 import { queryClient } from "../../App";
 import { QUERY_KEY } from "../../constants/key";
 

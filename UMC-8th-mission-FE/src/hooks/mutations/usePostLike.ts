@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { postLike } from "../../apis/lp";
+import { postLike } from "../../apis/lpdetail";
 import { queryClient } from "../../App";
 import { QUERY_KEY } from "../../constants/key";
 

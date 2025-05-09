@@ -16,7 +16,6 @@ function useGetInfiniteComments(
         ),
         // initialPageParam: 0,
         getNextPageParam: (lastPage) => {
-            console.log(lastPage);
             if (lastPage.data.hasNext) {
                 return lastPage.data.nextCursor;
             }
