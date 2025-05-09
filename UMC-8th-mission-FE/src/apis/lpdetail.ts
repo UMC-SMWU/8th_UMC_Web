@@ -1,4 +1,4 @@
-import { LpComment, RequestCommentDto, RequestLpDto, ResponseLikeLpDto, ResponseLpDetailDto } from "../types/lp";
+import { RequestLpDto, ResponseLikeLpDto, ResponseLpDetailDto } from "../types/lp";
 import { axiosInstance } from "./axios"
 
 export const getLpDetail = async (

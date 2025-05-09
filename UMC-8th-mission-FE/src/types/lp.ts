@@ -28,6 +28,11 @@ export type RequestLpDto = {
     lpId: number;
 }
 
+export type RequestCommentDto = {
+    lpId: number;
+    content: string;
+};
+
 export type ResponseLpListDto = CurserBasedResponse<Lp[]>;
 
 export type Author = {
@@ -70,4 +75,14 @@ export type ResponseLikeLpDto = CommonResponse<{
     id: number;
     userId: number;
     lpId: number;
+}>;
+
+export type ResponseCommentDto = CurserBasedResponse<{
+    id: number;
+    content: string;
+    lpId: number;
+    authorId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    author: Author;
 }>;

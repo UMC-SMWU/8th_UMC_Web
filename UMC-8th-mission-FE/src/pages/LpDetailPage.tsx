@@ -13,6 +13,7 @@ import useGetMyInfo from "../hooks/queries/useGetMyInfo";
 import { useAuth } from "../context/AuthContext";
 import usePostLike from "../hooks/mutations/usePostLike";
 import useDeleteLike from "../hooks/mutations/useDeleteLike";
+import usepPostComment from "../hooks/mutations/useComment";
 
 const LpDetailPage = () => {
     const { lpId } = useParams();
@@ -29,6 +30,8 @@ const LpDetailPage = () => {
     const {mutate: likeMutate} = usePostLike();
     const {mutate: dislikeMutate} = useDeleteLike();
 
+    const {mutate: sendComment} = usepPostComment();
+
     const isLiked = lp?.data.likes
       .map((like) => like.userId)
       .includes(me?.data.id as number);
@@ -39,6 +42,16 @@ const LpDetailPage = () => {
 
     const handleDislikeLp = () => {
       dislikeMutate({lpId: Number(lpId)});
+    };
+
+    const [comment, setComment] = useState<string>("");
+    const handleSendComment = () => {
+      if (!comment.trim()) {
+        alert("댓글을 입력하세요."); // 댓글이 비어있을 경우 경고창 표시
+        return;
+      }
+      sendComment({lpId: Number(lpId), content: comment});
+      setComment("");
     };
 
     useEffect(() => {
@@ -139,15 +152,14 @@ const LpDetailPage = () => {
         <div className="flex items-center w-full m-2 gap-2">
           <input
             type="text"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
             placeholder="댓글을 입력하세요..."
             className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           <button
             className="px-4 py-2 bg-blue-500 text-white font-bold rounded-r-md hover:bg-blue-600 transition-colors duration-200"
-            onClick={() => {
-              // 작성 버튼 클릭 시 동작
-              console.log("댓글 작성 버튼 클릭");
-            }}
+            onClick={handleSendComment}
           >
             작성
           </button>
