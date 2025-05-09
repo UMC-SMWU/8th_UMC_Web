@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useUpdateMyInfo } from "../hooks/mutations/useUpdateMyInfo";
@@ -18,14 +18,13 @@ const MyPage = () => {
 
   const user = data?.data;
 
-  // 첫 로딩 시 초기값 세팅
-  useState(() => {
+  useEffect(() => {
     if (user) {
       setName(user.name);
       setBio(user.bio || "");
       setAvatar(user.avatar || "");
     }
-  });
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();

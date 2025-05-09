@@ -12,6 +12,7 @@ interface AuthContextType {
   user: User | null;
   login: (signinData: RequestSigninDto) => Promise<void>;
   logout: () => Promise<void>;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 export const AuthContext: React.Context<AuthContextType> = createContext<AuthContextType>({
@@ -19,7 +20,8 @@ export const AuthContext: React.Context<AuthContextType> = createContext<AuthCon
   refreshToken: null, 
   user: null,
   login: async () => {},  
-  logout: async () => {},  
+  logout: async () => {}, 
+  setUser: () => {}, 
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -82,7 +84,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ accessToken, refreshToken, user, login, logout }}>
+    <AuthContext.Provider value={{ accessToken, refreshToken, user, login, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );
