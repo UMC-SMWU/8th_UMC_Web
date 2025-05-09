@@ -30,7 +30,8 @@ export type RequestLpDto = {
 
 export type RequestCommentDto = {
     lpId: number;
-    content: string;
+    commentId?: number;
+    content?: string;
 };
 
 export type ResponseLpListDto = CurserBasedResponse<Lp[]>;
