@@ -7,12 +7,14 @@ import "dayjs/locale/ko";
 import LpCard from "../components/LpCard/LpCard";
 import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 import LpCardSkeleton from "../components/LpCard/LpCardSkeleton";
+import NewLpForm from "./NewLpForm";
 
 const HomePage = () => {
   const [order, setOrder] = useState<"asc" | "desc">("desc");
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const observerRef = useRef<HTMLDivElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetInfiniteLpList(
@@ -61,6 +63,13 @@ const HomePage = () => {
           <option value="desc">최신순</option>
           <option value="asc">오래된 순</option>
         </select>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="fixed bottom-10 right-10 bg-pink-500 text-white w-12 h-12 rounded-full shadow-lg text-2xl z-50"
+        >
+          +
+        </button>
+        {isModalOpen && <NewLpForm onClose={() => setIsModalOpen(false)} />}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
