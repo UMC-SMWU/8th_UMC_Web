@@ -27,7 +27,8 @@ const publicRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> }, // / 경로에 해당하는 페이지
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupStep />},
-      { path: 'v1/auth/google/callback', element: <GoogleLoginRedirectPage />}
+      { path: 'v1/auth/google/callback', element: <GoogleLoginRedirectPage />},
+      { path: 'lp/:lpId', element: <LpDetailPage /> },
     ]
   }
 ]
@@ -40,7 +41,6 @@ const protectedRoutes: RouteObject[] = [
     errorElement: <NotFoundPage />,
     children: [
       { path: 'my', element: <MyPage /> },
-      { path: 'lp/:lpId', element: <LpDetailPage /> },
     ]
   }
 ]

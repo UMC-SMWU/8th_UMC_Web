@@ -24,6 +24,10 @@ export type Lp = {
     likes: Likes[];
 };
 
+export type RequestLpDto = {
+    lpId: number;
+}
+
 export type ResponseLpListDto = CurserBasedResponse<Lp[]>;
 
 export type Author = {
@@ -61,3 +65,9 @@ export type LpComment = {
 };
 
 export type ResponseLpCommentListDto = CurserBasedResponse<LpComment[]>;
+
+export type ResponseLikeLpDto = CommonResponse<{
+    id: number;
+    userId: number;
+    lpId: number;
+}>;
