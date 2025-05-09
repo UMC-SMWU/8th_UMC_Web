@@ -9,7 +9,7 @@ function usepPostComment() {
         onSuccess: (data) => {
             console.log("댓글 작성 성공", data);
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEY.lps],
+                queryKey: [QUERY_KEY.comment],
             });
         },
         onError: (error) => {

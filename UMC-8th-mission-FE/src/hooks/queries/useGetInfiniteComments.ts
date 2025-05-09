@@ -9,7 +9,7 @@ function useGetInfiniteComments(
     order: PAGINATION_ORDER,
 ) {
     return useInfiniteQuery({
-        queryKey: [QUERY_KEY.lpId, order],
+        queryKey: [QUERY_KEY.comment],
         queryFn: ({ pageParam = 0 }) => getLpCommentList(
             lpId,
             { cursor: pageParam, limit, order }
