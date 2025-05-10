@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useGetLpDetail from "../hooks/queries/useGetLpDetail";
 import { PAGINATION_ORDER } from "../enums/common";
 import LpComment from "../components/comments/LpComment";
@@ -14,8 +14,10 @@ import { useAuth } from "../context/AuthContext";
 import usePostLike from "../hooks/mutations/usePostLike";
 import useDeleteLike from "../hooks/mutations/useDeleteLike";
 import usepPostComment from "../hooks/mutations/useComment";
+import { useDeleteLp } from "../hooks/mutations/useLpDetail";
 
 const LpDetailPage = () => {
+  const navigate = useNavigate();
     const { lpId } = useParams();
     const { accessToken } = useAuth();
     const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
@@ -27,6 +29,17 @@ const LpDetailPage = () => {
     });
 
     const {data: me} = useGetMyInfo(accessToken);
+    const isMe = me?.data.id === lp?.data.author.id;
+    const {mutate: deleteLp} = useDeleteLp();
+
+    const handleEditLp = () => {
+    };
+
+    const handleDeleteLp = () => {
+      deleteLp({lpId: Number(lpId)});
+      navigate("/my");
+    };
+
     const {mutate: likeMutate} = usePostLike();
     const {mutate: dislikeMutate} = useDeleteLike();
 
@@ -71,7 +84,7 @@ const LpDetailPage = () => {
     return (
       <div className="w-10/12 mx-auto mt-10">
       <div className="p-5 flex flex-col items-center justify-center text-white min-h-screen">
-        <div className="flex items-center justify-around w-full mb-4">
+        <div className="flex items-center justify-between w-full mb-4">
           <div className="flex items-center gap-4">
             <div className="w-8 h-8 rounded-full text-xl flex items-center justify-center bg-gray-700 text-gray-300">
               {lp.data.author.avatar ? (
@@ -91,14 +104,16 @@ const LpDetailPage = () => {
         </div>
         <div className="flex items-center justify-around w-full gap-4 mb-4">
           <h1 className="text-3xl font-bold mb-4">{lp.data.title}</h1>
-          <div className="flex items-center gap-4">
-            <div className="text-xl"> <IoPencilOutline /> </div>
-            <div className="text-xl"> <IoTrashBin /> </div>
-          </div>
+          {isMe && (
+            <div className="flex items-center gap-4">
+              <button className="text-xl" onClick={handleEditLp}> <IoPencilOutline /> </button>
+              <button className="text-xl" onClick={handleDeleteLp}> <IoTrashBin /> </button>
+            </div>
+          )}
         </div>
         <div className="relative w-128 h-128 rounded-full overflow-hidden border-4 border-gray-700 animate-spin-slow">
           <img
-            src={lp.data.thumbnail}
+            src={lp.data.thumbnail || "https://media.istockphoto.com/id/1408806884/photo/12-inch-vinyl-lp-record-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=RF9dJiOjNmu4pmLSnNWITncbOspZ7BYvTyAQis_OK1U="}
             alt={lp.data.title}
             className="w-full h-full object-cover"
           />

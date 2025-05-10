@@ -24,3 +24,11 @@ export const deleteLike = async (
 
     return data;
 };
+
+export const deleteLp = async (
+    {lpId}: RequestLpDto
+) => {
+    const {data} = await axiosInstance.delete(`/v1/lps/${lpId}`);
+
+    return data;
+};
