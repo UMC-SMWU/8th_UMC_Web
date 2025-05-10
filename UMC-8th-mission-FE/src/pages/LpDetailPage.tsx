@@ -15,6 +15,8 @@ import usePostLike from "../hooks/mutations/usePostLike";
 import useDeleteLike from "../hooks/mutations/useDeleteLike";
 import usepPostComment from "../hooks/mutations/useComment";
 import { useDeleteLp, useUpdateLp } from "../hooks/mutations/useLpDetail";
+import { queryClient } from "../App";
+import { QUERY_KEY } from "../constants/key";
 
 const LpDetailPage = () => {
   const navigate = useNavigate();
@@ -30,6 +32,12 @@ const LpDetailPage = () => {
 
     const {data: me} = useGetMyInfo(accessToken);
     const isMe = me?.data.id === lp?.data.author.id;
+    useEffect(() => {
+      if (lp?.data?.tags) {
+        setTags(lp.data.tags);
+      }
+    }, [lp?.data?.tags]);
+
     const {mutate: updateLp} = useUpdateLp();
     const {mutate: deleteLp} = useDeleteLp();
 
@@ -60,8 +68,14 @@ const LpDetailPage = () => {
       {
         onSuccess: () => {
           setIsEditing(false);
-        }
-      });
+          // LP 상세 정보 쿼리를 무효화하여 최신 데이터 다시 가져오기
+          queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY.lps, Number(lpId)], // useGetLpDetail 훅의 쿼리 키와 일치시켜야 합니다.
+              exact: true, // exact: true 옵션을 사용하면 해당 키와 정확히 일치하는 쿼리만 무효화합니다.
+          });
+          alert("저장되었습니다!"); // 저장 성공 알림 추가
+        },
+      },)
     };
 
     const handleDeleteTag = (tagId: number) => {
@@ -199,7 +213,7 @@ const LpDetailPage = () => {
           )}
         </div>
         <div className="flex flex-wrap gap-2 mt-4">
-          {lp.data.tags.map((tag) => (
+          {tags.map((tag) => (
             <span
               key={tag.id}
               className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm"
@@ -207,7 +221,7 @@ const LpDetailPage = () => {
               #{tag.name}
               {isEditing && (
                 <button
-                  className="text-red-500 hover:text-red-700"
+                  className="m-1 text-red-500 hover:text-red-700"
                   onClick={() => handleDeleteTag(tag.id)}
                 >
                   x
