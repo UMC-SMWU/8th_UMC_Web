@@ -3,6 +3,7 @@ import { RequestSigninDto } from "../types/auth";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { postLogout, postSignin } from "../apis/auth";
+import { useLogin, useLogout } from "../hooks/mutations/useAuth";
 
 interface AuthContextType {
     accessToken: string | null;
@@ -40,43 +41,49 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
         getRefreshTokenFromStorage(),
     );
 
+    const {mutate: loginMutate} = useLogin();
+    const {mutate: logoutMutate} = useLogout();
+
     const login = async (signinData: RequestSigninDto) => {
-        try {
-            const { data } = await postSignin(signinData)
+        loginMutate(signinData, {
+            onSuccess: (data) => {
+                if (data) {
+                    const newAccessToken = data.data.accessToken
+                    const newRefreshToken = data.data.refreshToken;
+                    
+                    setAccessTokenInStorage(newAccessToken);
+                    setRefreshTokenInStorage(newRefreshToken);
 
-            if (data) {
-                const newAccessToken = data.accessToken;
-                const newRefreshToken = data.refreshToken;
-                
-                setAccessTokenInStorage(newAccessToken);
-                setRefreshTokenInStorage(newRefreshToken);
+                    setAccessToken(newAccessToken); // 상태 업데이트
+                    setRefreshToken(newRefreshToken);
 
-                setAccessToken(newAccessToken); // 상태 업데이트
-                setRefreshToken(newRefreshToken);
-
-                alert("로그인 성공");
-                window.location.href = "/my";
+                    alert("로그인 성공");
+                    window.location.href = "/my";
+                }
+            },
+            onError: (error) => {
+                console.error("로그인 실패", error); // 추후 toast ui 로 변경
+                alert("로그인 실패");
             }
-        } catch (error) {
-            console.error("로그인 실패", error); // 추후 toast ui 로 변경
-            alert("로그인 실패");
-        }
+        })
     };
 
     const logout = async () => {
-        try {
-            await postLogout();
-            removeAccessTokenFromStorage();
-            removeRefreshTokenFromStorage();
+        logoutMutate(undefined, {
+            onSuccess: () => {
+                removeAccessTokenFromStorage();
+                removeRefreshTokenFromStorage();
 
-            setAccessToken(null); // 상태 업데이트
-            setRefreshToken(null);
+                setAccessToken(null); // 상태 업데이트
+                setRefreshToken(null);
 
-            alert("로그아웃 되었습니다.");
-        } catch (error) {
-            console.error("로그아웃 오류", error);
-            alert("로그아웃 실패")
-        }
+                alert("로그아웃 되었습니다.");
+            },
+            onError: (error) => {
+                console.error("로그아웃 오류", error);
+                alert("로그아웃 실패");
+            }
+        })
     };
 
     return (
