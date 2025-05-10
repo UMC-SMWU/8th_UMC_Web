@@ -17,6 +17,7 @@ const MyPage = () => {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { mutate: updateMutate } = useUpdateMyInfo();
 
@@ -88,10 +89,10 @@ const MyPage = () => {
           </button>
           <h1 className="text-3xl font-bold text-center w-full">마이페이지</h1>
         </div>
-
+        {/* 프로필 이미지 미리보기 */}
         <label htmlFor="avatar-upload" className="cursor-pointer">
           <img
-            src={data.data.avatar || profile}
+            src={previewUrl || data.data.avatar || profile}
             alt="프로필 이미지"
             className="w-24 h-24 rounded-full border border-gray-400 object-cover"
           />
@@ -100,7 +101,13 @@ const MyPage = () => {
           id="avatar-upload"
           type="file"
           accept="image/*"
-          onChange={(e) => setImage(e.target.files?.[0] || null)}
+          onChange={(e) => {
+            const file = e.target.files?.[0] || null;
+            setImage(file);
+            if (file) {
+              setPreviewUrl(URL.createObjectURL(file));
+            }
+          }}
           className="hidden"
         />
 
