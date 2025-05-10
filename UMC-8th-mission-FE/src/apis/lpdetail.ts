@@ -1,4 +1,4 @@
-import { RequestLpDto, ResponseLikeLpDto, ResponseLpDetailDto } from "../types/lp";
+import { RequestLpDetailDto, RequestLpDto, RequestUpdateLpDto, ResponseLikeLpDto, ResponseLpDetailDto, ResponseLpDto } from "../types/lp";
 import { axiosInstance } from "./axios"
 
 export const getLpDetail = async (
@@ -21,6 +21,26 @@ export const deleteLike = async (
     {lpId}: RequestLpDto
 ): Promise<ResponseLikeLpDto>  => {
     const {data} = await axiosInstance.delete(`/v1/lps/${lpId}/likes`);
+
+    return data;
+};
+
+export const postLp = async (
+    {title, content, thumbnail, tags, published}: RequestLpDetailDto
+): Promise<ResponseLpDto> => {
+    const {data} = await axiosInstance.post(`/v1/lps`,
+        {title, content, thumbnail, tags, published}
+    );
+
+    return data;
+}
+
+export const updateLp = async (
+    {lpId, title, content, thumbnail, tags, published}: RequestUpdateLpDto
+): Promise<ResponseLpDto> => {
+    const {data} = await axiosInstance.patch(`/v1/lps/${lpId}`,
+        {title, content, thumbnail, tags, published}
+    );
 
     return data;
 };

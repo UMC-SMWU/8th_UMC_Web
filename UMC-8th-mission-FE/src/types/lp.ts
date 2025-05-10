@@ -24,6 +24,34 @@ export type Lp = {
     likes: Likes[];
 };
 
+export type RequestUpdateLpDto = {
+    lpId: number;
+    title: string;
+    content: string;
+    thumbnail: string;
+    tags: string[];
+    published: boolean;
+};
+
+export type RequestLpDetailDto = {
+    title: string;
+    content: string;
+    thumbnail: string;
+    tags: Tag[];
+    published: boolean;
+};
+
+export type ResponseLpDto = CommonResponse<{
+    id: number;
+    title: string;
+    content: string;
+    thumbnail: string;
+    published: boolean;
+    authorId: number;
+    createdAt: string;
+    updatedAt: string;
+}>;
+
 export type RequestLpDto = {
     lpId: number;
 }
