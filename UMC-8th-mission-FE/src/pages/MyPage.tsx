@@ -4,9 +4,13 @@ import { PAGINATION_ORDER } from "../enums/common";
 import { IoIosSettings } from "react-icons/io";
 import useGetMyInfo from "../hooks/queries/useGetMyInfo";
 import usePatchMy from "../hooks/mutations/usePatchMy";
-import { MdCheck } from "react-icons/md";
+import { MdAddBox, MdCheck } from "react-icons/md";
+import useGetMyLpList from "../hooks/queries/useGetMyLpList";
+import LpCard from "../components/LpCard/LpCard";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
+	const navigate = useNavigate();
 	const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
 	const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
 	const [name, setName] = useState(""); // 이름 상태
@@ -17,6 +21,15 @@ const MyPage = () => {
 	const { data } = useGetMyInfo(accessToken);
 	const { mutate } = usePatchMy();
 
+	const { data: lps } = useGetMyLpList({
+		order,
+	});
+
+	const handleCardClick = (lpId: number) => {
+    	navigate(`/lp/${lpId}`);
+  	};
+
+	const handlePostLp = () => {}
 
 	const handlePatch = () => {
 		setIsEditing(true);
@@ -49,9 +62,10 @@ const MyPage = () => {
     localStorage.setItem("myName", data?.data.name || "");
 
     return (
-        <div className="flex flex-col items-center min-h-screen">
-			<div className="flex items-center">
-				<div className="flex items-center justify-center w-40 h-40 rounded-full bg-[#aed3fd] m-4">
+		<div className="flex justify-center min-h-screen">
+			<div className="flex flex-col items-center w-4/5">
+				<div className="flex items-center">
+					<div className="flex items-center justify-center w-40 h-40 rounded-full bg-[#aed3fd] m-4">
 					{isEditing ? (
 						<label className="cursor-pointer">
 						<input
@@ -79,10 +93,10 @@ const MyPage = () => {
 					) : (
 						<IoPerson className="text-white text-7xl" />
 					)}
-				</div>
-				<div className="flex flex-col gap-1">
-				{isEditing ? (
-					<>
+					</div>
+					<div className="flex flex-col gap-1">
+					{isEditing ? (
+						<>
 						<input
 							type="text"
 							value={name}
@@ -104,35 +118,52 @@ const MyPage = () => {
 						</>
 					)}
 					<div className="text-md font-bold">{data?.data.email}</div>
-				</div>
-				<button className="text-2xl ml-10" onClick={isEditing ? handleSave : handlePatch}>
+					</div>
+					<button
+					className="text-2xl ml-10"
+					onClick={isEditing ? handleSave : handlePatch}
+					>
 					{isEditing ? <MdCheck /> : <IoIosSettings />}
-				</button>
+					</button>
+				</div>
+				{/* page order button */}
+				<div className="w-full flex justify-between mt-4">
+					<button className="text-2xl" onClick={handlePostLp}>
+						<MdAddBox />
+					</button>
+					<div className="flex border border-gray-300 rounded overflow-hidden text-sm font-bold">
+						<button
+						className={`px-4 py-2 text-center w-30 ${
+							order === PAGINATION_ORDER.asc
+							? "bg-white text-black"
+							: "bg-black text-white"
+						}`}
+						onClick={() => setOrder(PAGINATION_ORDER.asc)}
+						>
+						오래된 순
+						</button>
+						<button
+						className={`px-4 py-2 text-center w-30 ${
+							order === PAGINATION_ORDER.asc
+							? "bg-black text-white"
+							: "bg-white text-black"
+						}`}
+						onClick={() => setOrder(PAGINATION_ORDER.desc)}
+						>
+						최신순
+						</button>
+					</div>
+				</div>
+				<div className="grid grid-cols-3 lg:grid-cols-4 gap-4 mt-4 w-full">
+					{lps?.data.map((lp) => (
+						<div key={lp.id} className="">
+							<LpCard key={lp.id} lp={lp} onClick={handleCardClick} />
+						</div>
+					))}
+				</div>
 			</div>
-			<div className="flex border border-gray-300 rounded overflow-hidden text-sm font-bold">
-				<button
-					className={`px-4 py-2 text-center w-30 ${
-					order === PAGINATION_ORDER.asc
-					? "bg-white text-black"
-					: "bg-black text-white"
-					}`}
-					onClick={() => setOrder(PAGINATION_ORDER.asc)}
-				>
-					오래된 순
-				</button>
-				<button
-					className={`px-4 py-2 text-center w-30 ${
-					order === PAGINATION_ORDER.asc
-						? "bg-black text-white"
-						: "bg-white text-black"
-					}`}
-					onClick={() => setOrder(PAGINATION_ORDER.desc)}
-				>
-					최신순
-				</button>
-			</div>
-        </div>
-    )
+		</div>
+		);
 }
 
 export default MyPage

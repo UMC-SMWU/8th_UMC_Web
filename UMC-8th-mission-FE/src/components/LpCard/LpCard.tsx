@@ -15,7 +15,7 @@ const LpCard = ({lp, onClick}: LpCardProps) => {
         onClick={() => onClick(lp.id)}
     >
         <img
-        src={lp.thumbnail}
+        src={lp.thumbnail || "https://media.istockphoto.com/id/1408806884/photo/12-inch-vinyl-lp-record-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=RF9dJiOjNmu4pmLSnNWITncbOspZ7BYvTyAQis_OK1U="}
         alt={lp.title}
         className="absolute top-0 left-0 w-full h-full object-cover bg-gray-300"
         />
