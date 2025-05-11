@@ -37,7 +37,7 @@ export type RequestLpDetailDto = {
     title: string;
     content: string;
     thumbnail: string;
-    tags: Tag[];
+    tags: string[];
     published: boolean;
 };
 

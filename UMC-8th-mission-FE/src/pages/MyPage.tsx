@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { IoPerson } from "react-icons/io5";
+import { useEffect, useState } from "react"
+import { IoClose, IoPerson } from "react-icons/io5";
 import { PAGINATION_ORDER } from "../enums/common";
 import { IoIosSettings } from "react-icons/io";
 import useGetMyInfo from "../hooks/queries/useGetMyInfo";
@@ -8,6 +8,8 @@ import { MdAddBox, MdCheck } from "react-icons/md";
 import useGetMyLpList from "../hooks/queries/useGetMyLpList";
 import LpCard from "../components/LpCard/LpCard";
 import { useNavigate } from "react-router-dom";
+import { usePostLp } from "../hooks/mutations/useLpDetail";
+import { Tag } from "../types/lp";
 
 const MyPage = () => {
 	const navigate = useNavigate();
@@ -19,6 +21,12 @@ const MyPage = () => {
 	
 	const accessToken = localStorage.getItem("accessToken");
 	const { data } = useGetMyInfo(accessToken);
+	const { mutate: postLp} = usePostLp();
+	const [thumbnail, setThumbnail] = useState("");
+	const [title, setTitle] = useState("");
+	const [content, setContent] = useState("");
+	const [tags, setTags] = useState<Tag[]>([]);
+    const [newTag, setNewTag] = useState(""); 
 	const { mutate } = usePatchMy();
 
 	const { data: lps } = useGetMyLpList({
@@ -29,7 +37,39 @@ const MyPage = () => {
     	navigate(`/lp/${lpId}`);
   	};
 
-	const handlePostLp = () => {}
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const isFormValid = title.trim() && content.trim() && thumbnail.trim() && tags.length > 0;
+
+	const handleDeleteTag = (tagId: number) => {
+      setTags(tags.filter((tag) => tag.id !== tagId));
+    };
+
+    const handleAddTag = () => {
+      if (!newTag.trim()) return;
+      setTags([...tags, { id: Date.now(), name: newTag }]); // 임시 ID 생성
+      setNewTag("");
+    };
+
+	useEffect(() => {
+		if (tags) {
+		setTags(tags);
+		}
+	}, [tags]);
+
+	const handlePostLp = () => {
+		postLp({
+			title,
+			content,
+			tags: tags.map((tag) => tag.name),
+			thumbnail,
+			published: true,
+		});
+		setIsModalOpen(false);
+	};
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+	};
 
 	const handlePatch = () => {
 		setIsEditing(true);
@@ -62,7 +102,8 @@ const MyPage = () => {
     localStorage.setItem("myName", data?.data.name || "");
 
     return (
-		<div className="flex justify-center min-h-screen">
+		<>
+		<div className={`flex justify-center min-h-screen transition-opacity duration-300 ${isModalOpen ? "opacity-50" : "opacity-100"}`}>
 			<div className="flex flex-col items-center w-4/5">
 				<div className="flex items-center">
 					<div className="flex items-center justify-center w-40 h-40 rounded-full bg-[#aed3fd] m-4">
@@ -128,7 +169,7 @@ const MyPage = () => {
 				</div>
 				{/* page order button */}
 				<div className="w-full flex justify-between mt-4">
-					<button className="text-2xl" onClick={handlePostLp}>
+					<button className="text-2xl" onClick={() => setIsModalOpen(true)}>
 						<MdAddBox />
 					</button>
 					<div className="flex border border-gray-300 rounded overflow-hidden text-sm font-bold">
@@ -163,7 +204,89 @@ const MyPage = () => {
 				</div>
 			</div>
 		</div>
-		);
+
+		{/* lpPost 모달창 */}
+		{isModalOpen && (
+			<div 
+				className="flex fixed inset-0 items-center justify-center"
+				onClick={handleCloseModal}
+			>
+				<div 
+					className="flex flex-col gap-3 bg-neutral-800 text-white p-6 rounded-xl shadow-lg w-full max-w-sm relative"
+					onClick={(e) => e.stopPropagation()}	
+				>
+					<button className="flex justify-end text-2xl" onClick={handleCloseModal}>
+						<IoClose />
+					</button>
+					<img src="https://media.istockphoto.com/id/1408806884/photo/12-inch-vinyl-lp-record-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=RF9dJiOjNmu4pmLSnNWITncbOspZ7BYvTyAQis_OK1U=" />
+					<input
+						type="text"
+						value={title}
+						placeholder="LP Name"
+						onChange={(e) => setTitle(e.target.value)}
+						className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+					/>
+					<input
+						type="text"
+						value={content}
+						placeholder="LP Content"
+						onChange={(e) => setContent(e.target.value)}
+						className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+					/>
+					<input
+						type="text"
+						value={thumbnail}
+						placeholder="LP image URL"
+						onChange={(e) => setThumbnail(e.target.value)}
+						className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+					/>
+					<div className="flex items-center gap-2">
+						<input
+							type="text"
+							value={newTag}
+							onChange={(e) => setNewTag(e.target.value)}
+							placeholder="태그를 입력하세요"
+							className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+						/>
+						<button
+							className="px-2 py-1 bg-gray-400 text-white rounded"
+							onClick={handleAddTag}
+						>
+							추가
+						</button>
+					</div>
+					<div className="flex flex-wrap gap-2 mt-4">
+						{tags.map((tag) => (
+							<span
+								key={tag.id}
+								className="px-3 py-1 border border-gray-200 text-gray-300 rounded-2xl text-sm"
+							>
+								# {tag.name}
+								<button
+									className="m-1 text-red-500 hover:text-red-700"
+									onClick={() => handleDeleteTag(tag.id)}
+								>
+									X
+								</button>
+							</span>
+						))}
+					</div>
+					<button
+						className={`mt-4 px-4 py-2 rounded ${
+							isFormValid
+							? "bg-blue-500 text-white hover:bg-blue-600"
+							: "bg-gray-400 text-gray-200 cursor-not-allowed"
+						}`}
+						onClick={handlePostLp}
+						disabled={!isFormValid} // 모든 필드가 채워지지 않으면 비활성화
+					>
+						Add Lp
+					</button>
+				</div>
+			</div>
+		)}
+		</>
+	);
 }
 
 export default MyPage

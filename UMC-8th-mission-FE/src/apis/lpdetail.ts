@@ -33,7 +33,7 @@ export const postLp = async (
     );
 
     return data;
-}
+};
 
 export const updateLp = async (
     {lpId, title, content, thumbnail, tags, published}: RequestUpdateLpDto

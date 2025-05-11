@@ -6,6 +6,14 @@ import { PAGINATION_ORDER } from "../../enums/common";
 
 export function usePostLp(){
     return useMutation({
+        mutationFn: postLp,
+        onSuccess: (data) => {
+            alert("LP 생성 성공");
+            console.log("LP 생성 성공", data);
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEY.lps, PAGINATION_ORDER],
+            });
+        },
     })
 }
 
