@@ -6,7 +6,8 @@ import LpCard from "../components/LpCard/LpCard";
 import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
 import LpModal from "../components/LpModal"; 
 import { useUploadLp } from "../hooks/mutations/useUploadLp";
-import { useDebounce } from "../hooks/useDebounce"; 
+import { useDebounce } from "../hooks/useDebounce";
+import { useThrottle } from "../hooks/useThrottle"; 
 
 const convertOrderToApi = (order: "new" | "old"): PAGINATION_ORDER =>
   order === "new" ? PAGINATION_ORDER.DESC : PAGINATION_ORDER.ASC;
@@ -33,11 +34,12 @@ const HomePage = () => {
 
   const { ref, inView } = useInView();
 
-  useEffect(() => {
+  useThrottle(() => {
     if (inView && hasNextPage) {
+      console.log("🔥 fetchNextPage 실행");
       fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, 1000, [inView, hasNextPage]);
 
   if (isLoading) return <LpCardSkeletonList count={12} />;
   if (isError) return <div>에러 발생!</div>;
