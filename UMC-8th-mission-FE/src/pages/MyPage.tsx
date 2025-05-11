@@ -87,8 +87,6 @@ const MyPage = () => {
 		mutate(updatedInfo, {
 			onSuccess: () => {
 				setIsEditing(false);
-			    localStorage.setItem("myName", data?.data.name || "");
-
 			}
 		});
 	};
@@ -99,7 +97,7 @@ const MyPage = () => {
 		}
 	};
 
-    localStorage.setItem("myName", data?.data.name || "");
+    // localStorage.setItem("myName", data?.data.name || "");
 
     return (
 		<>
