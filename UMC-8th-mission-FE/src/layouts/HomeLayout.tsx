@@ -4,11 +4,12 @@ import { useAuth } from "../context/AuthContext";
 import Footer from "./Footer";
 import { MdArrowBack, MdMenu, MdPerson, MdSearch } from "react-icons/md";
 import { useDeleteUser } from "../hooks/mutations/useAuth";
+import useGetMyInfo from "../hooks/queries/useGetMyInfo";
 
 const HomeLayout = () => {
   const { accessToken, logout } = useAuth();
   const navigate = useNavigate();
-  const name = localStorage.getItem("myName");
+  const {data: myInfo} = useGetMyInfo(accessToken);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 사이드바 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
@@ -145,7 +146,7 @@ const HomeLayout = () => {
             <div className="px-3 cursor-pointer">
               <MdSearch />
             </div>
-            {accessToken && <div className="text-sm">{name}님 반갑습니다.</div>}
+            {accessToken && <div className="text-sm">{myInfo?.data.name}님 반갑습니다.</div>}
             <button
               className="text-white py-2 mx-1 p-[10px] rounded-sm text-sm cursor-pointer"
               onClick={handleButtonClick}
