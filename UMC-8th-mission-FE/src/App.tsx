@@ -12,7 +12,7 @@ import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import LpDetailPage from './pages/LpDetailPage'
-import ThrottlePage from './pages/throttlePage'
+import ThrottlePage from './pages/ThrottlePage'
 
 // 1. 홈페이지
 // 2. 로그인 페이지
