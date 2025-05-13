@@ -6,9 +6,13 @@ import { useEffect, useState } from "react";
 import SideBar from "./SideBar";
 import { usePostLogout } from "../hooks/mutations/useUser.ts";
 
-export default function NavBar() {
+interface NavBarProps {
+  name?: string;
+}
+
+export default function NavBar({ name }: NavBarProps) {
   const navigate = useNavigate();
-  const { accessToken, nickname } = useAuthContext();
+  const { accessToken } = useAuthContext();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [wasSidebarOpen, setWasSidebarOpen] = useState(false);
 
@@ -48,7 +52,7 @@ export default function NavBar() {
         <Search color="white" size={18} />
         {accessToken ? (
           <section className="flex gap-4 items-center">
-            <NavButton text={`${nickname}님 반갑습니다.`} onClick={() => {}} />
+            <NavButton text={`${name}님 반갑습니다.`} onClick={() => {}} />
             <NavButton
               text="로그아웃"
               onClick={postLogout}
