@@ -11,3 +11,13 @@ export const getLpList = async (
 
     return data;
 };
+
+export const getMyLpList = async (
+    paginationDto: PaginationDto
+): Promise<ResponseLpListDto> => {
+    const {data} = await axiosInstance.get('/v1/lps/user',  {
+        params: paginationDto,
+    });
+
+    return data;
+};

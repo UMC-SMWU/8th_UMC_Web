@@ -6,10 +6,13 @@ import useGetInfiniteLpList from "../hooks/queries/useGetInfiniteLpList";
 import { useInView } from "react-intersection-observer";
 import LpCard from "../components/LpCard/LpCard";
 import LpCardSkeletonList from "../components/LpCard/LpCardSkeletonList";
+import useDebounce from "../hooks/useDebounce";
+import { SEARCH_DELAY } from "../constants/delay";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const debouncedValue = useDebounce(search, SEARCH_DELAY);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
   // const { data, isError, isLoading } = useGetLpList({
   //   search,
@@ -17,7 +20,7 @@ const HomePage = () => {
   // });
 
   const {data: lps, isFetching, hasNextPage, isLoading, fetchNextPage, isError} = 
-    useGetInfiniteLpList(3, search, order);
+    useGetInfiniteLpList(3, debouncedValue, order);
 
   // ref  특정 html 요소 감시 가능
   const {ref, inView} = useInView({
@@ -48,7 +51,12 @@ const HomePage = () => {
   
   return (
     <div className="mx-5">
-      <input value={search} onChange={(e) => setSearch(e.target.value)} />
+      <input 
+        value={search} 
+        onChange={(e) => setSearch(e.target.value)} 
+        placeholder="검색어를 입력하세요"
+        className="w-full p-2 border border-gray-300 rounded mb-4"
+      />
       <div className="flex justify-end mb-4">
         <div className="flex border border-gray-300 rounded overflow-hidden text-sm font-bold">
         <button

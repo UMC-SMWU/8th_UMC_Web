@@ -12,6 +12,7 @@ import GoogleLoginRedirectPage from './pages/GoogleLoginRedirectPage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import LpDetailPage from './pages/LpDetailPage'
+import ThrottlePage from './pages/ThrottlePage'
 
 // 1. 홈페이지
 // 2. 로그인 페이지
@@ -27,7 +28,9 @@ const publicRoutes: RouteObject[] = [
       { index: true, element: <HomePage /> }, // / 경로에 해당하는 페이지
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupStep />},
-      { path: 'v1/auth/google/callback', element: <GoogleLoginRedirectPage />}
+      { path: 'v1/auth/google/callback', element: <GoogleLoginRedirectPage />},
+      { path: 'lp/:lpId', element: <LpDetailPage /> },
+      { path: 'throttle', element: <ThrottlePage />}
     ]
   }
 ]
@@ -40,7 +43,6 @@ const protectedRoutes: RouteObject[] = [
     errorElement: <NotFoundPage />,
     children: [
       { path: 'my', element: <MyPage /> },
-      { path: 'lp/:lpId', element: <LpDetailPage /> },
     ]
   }
 ]

@@ -3,13 +3,18 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Footer from "./Footer";
 import { MdArrowBack, MdMenu, MdPerson, MdSearch } from "react-icons/md";
+import { useDeleteUser } from "../hooks/mutations/useAuth";
+import useGetMyInfo from "../hooks/queries/useGetMyInfo";
 
 const HomeLayout = () => {
   const { accessToken, logout } = useAuth();
   const navigate = useNavigate();
-  const name = localStorage.getItem("myName");
+  const {data: myInfo} = useGetMyInfo(accessToken);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 사이드바 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+
+  const {mutate} = useDeleteUser();
 
   const handleLogoClick = () => {
     navigate("/");
@@ -21,6 +26,18 @@ const HomeLayout = () => {
     }
     navigate("/login");
   };
+
+  const handleLeave = () => {
+    mutate(undefined, {
+      onSuccess: () => {
+        alert("탈퇴되었습니다.");
+      },
+      onError: (error) => {
+        console.error("탈퇴 실패:", error);
+        alert("탈퇴에 실패했습니다.");
+      },
+    })
+  }
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen); // 사이드바 열기/닫기 토글
@@ -68,20 +85,48 @@ const HomeLayout = () => {
             >
               <MdPerson className="mx-3"/> 마이페이지
             </button>
-            <button
-              className="items-center text-white py-2 px-4 text-xs cursor-pointer mt-auto"
-              onClick={() => {
-                navigate("/my");
-                closeSidebar(); // 사이드바 닫기
-              }}
-            >
-              탈퇴하기
-            </button>
+            {accessToken && (
+              <button
+                className="items-center text-white py-2 px-4 text-xs cursor-pointer mt-auto"
+                onClick={() => {
+                  setIsModalOpen(true);
+                  closeSidebar(); // 사이드바 닫기
+                }}
+              >
+                탈퇴하기
+              </button>
+            )}
           </nav>
         </aside>
       )}
 
-      <div className={`flex flex-col flex-1 transition-opacity duration-300 ${isSidebarOpen ? "opacity-50" : "opacity-100"}`}>
+      {/* 탈퇴 모달 */}
+      {isModalOpen && (
+          <div className="fixed inset-0 z-1000 flex items-center justify-center">
+            <div className="bg-white p-10 rounded shadow-lg text-black">
+              <p className="mb-4">정말로 탈퇴하시겠습니까?</p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-20"
+                  onClick={() => {
+                    handleLeave(); // 탈퇴 처리
+                    setIsModalOpen(false)
+                  }}
+                >
+                  예
+                </button>
+                <button
+                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-20"
+                  onClick={() => {setIsModalOpen(false)}} // 모달 닫기
+                >
+                  아니오
+                </button>
+              </div>
+          </div>
+        </div>
+      )}
+
+      <div className={`flex flex-col flex-1 transition-opacity duration-300 ${isSidebarOpen || isModalOpen ? "opacity-50" : "opacity-100"}`}>
         <nav className="flex justify-between items-center text-white font-bold py-2 px-4">
           <div className="flex items-center">
             <button
@@ -101,7 +146,7 @@ const HomeLayout = () => {
             <div className="px-3 cursor-pointer">
               <MdSearch />
             </div>
-            {accessToken && <div className="text-sm">{name}님 반갑습니다.</div>}
+            {accessToken && <div className="text-sm">{myInfo?.data.name}님 반갑습니다.</div>}
             <button
               className="text-white py-2 mx-1 p-[10px] rounded-sm text-sm cursor-pointer"
               onClick={handleButtonClick}

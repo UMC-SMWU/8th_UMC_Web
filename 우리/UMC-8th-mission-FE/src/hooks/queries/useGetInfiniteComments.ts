@@ -9,14 +9,13 @@ function useGetInfiniteComments(
     order: PAGINATION_ORDER,
 ) {
     return useInfiniteQuery({
-        queryKey: [QUERY_KEY.lpId, order],
+        queryKey: [QUERY_KEY.comment, lpId, order],
         queryFn: ({ pageParam = 0 }) => getLpCommentList(
             lpId,
             { cursor: pageParam, limit, order }
         ),
         // initialPageParam: 0,
         getNextPageParam: (lastPage) => {
-            console.log(lastPage);
             if (lastPage.data.hasNext) {
                 return lastPage.data.nextCursor;
             }
