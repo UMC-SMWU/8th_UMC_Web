@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "../hooks/useCustomRedux.ts";
-import { clearCart } from "../slices/cartSlice.ts";
+import { openModal } from "../slices/modalSlice.ts";
 
 const PriceBox = () => {
   const { total } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const handleClearCart = () => {
-    dispatch(clearCart());
+    dispatch(openModal());
   };
 
   return (
