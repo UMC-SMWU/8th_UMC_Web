@@ -19,40 +19,37 @@ interface CartState {
   actions: CartActions;
 }
 
-export const useCartStore = create<CartState>()(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  immer((set, _) => ({
-    cartItems: cartItems,
+export const useCartStore = create(
+  immer<CartState>((set) => ({
+    cartItems,
     amount: 0,
     total: 0,
     actions: {
-      increase: (id: string) => {
+      increase: (id: string) =>
         set((state) => {
           const item = state.cartItems.find((item) => item.id === id);
-          if (item) {
-            item.amount += 1;
-          }
-        });
-      },
-      decrease: (id: string) => {
+          if (item) item.amount += 1;
+        }),
+
+      decrease: (id: string) =>
         set((state) => {
           const item = state.cartItems.find((item) => item.id === id);
-          if (item && item.amount > 0) {
-            item.amount -= 1;
-          }
-        });
-      },
-      removeItem: (id: string) => {
+          if (item && item.amount > 0) item.amount -= 1;
+        }),
+
+      removeItem: (id: string) =>
         set((state) => {
           state.cartItems = state.cartItems.filter((item) => item.id !== id);
-        });
-      },
-      clearCart: () => {
-        set(() => ({
-          cartItems: [],
-        }));
-      },
-      calculateTotal: () => {
+        }),
+
+      clearCart: () =>
+        set((state) => {
+          state.cartItems = [];
+          state.amount = 0;
+          state.total = 0;
+        }),
+
+      calculateTotal: () =>
         set((state) => {
           let total = 0;
           let amount = 0;
@@ -60,11 +57,9 @@ export const useCartStore = create<CartState>()(
             total += Number(item.price) * item.amount;
             amount += item.amount;
           });
-
           state.total = total;
           state.amount = amount;
-        });
-      },
+        }),
     },
   })),
 );

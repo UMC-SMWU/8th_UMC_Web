@@ -12,21 +12,18 @@ interface ModalState {
   actions: ModalActions;
 }
 
-export const useModalStore = create<ModalState>()(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  immer((set, _) => ({
+export const useModalStore = create(
+  immer<ModalState>((set) => ({
     isOpen: false,
     actions: {
-      openModal: () => {
+      openModal: () =>
         set((state) => {
           state.isOpen = true;
-        });
-      },
-      closeModal: () => {
+        }),
+      closeModal: () =>
         set((state) => {
           state.isOpen = false;
-        });
-      },
+        }),
     },
   })),
 );
