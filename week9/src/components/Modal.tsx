@@ -1,20 +1,20 @@
-import { clearCart } from "../slices/cartSlice.ts";
-import { useDispatch, useSelector } from "../hooks/useCustomRedux.ts";
-import { closeModal } from "../slices/modalSlice.ts";
+import { useModalActions, useModalInfo } from "../hooks/useModalStore.ts";
+import { useCartActions } from "../hooks/useCartStore.ts";
 
 const Modal = () => {
-  const { isOpen } = useSelector((state) => state.modal);
-  const dispatch = useDispatch();
+  const { isOpen } = useModalInfo();
+  const { clearCart } = useCartActions();
+  const { closeModal } = useModalActions();
 
   if (!isOpen) return null; // isOpen이 false면 Modal을 렌더링하지 않음
 
   const handleClose = () => {
-    dispatch(closeModal());
+    closeModal();
   };
 
   const handleClearCart = () => {
-    dispatch(clearCart());
-    handleClose();
+    clearCart();
+    closeModal();
   };
 
   return (

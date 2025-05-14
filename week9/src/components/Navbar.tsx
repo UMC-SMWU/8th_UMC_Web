@@ -1,15 +1,14 @@
 import { ShoppingCart } from "lucide-react";
-import { useDispatch, useSelector } from "../hooks/useCustomRedux.ts";
 import { useEffect } from "react";
-import { calculateTotal } from "../slices/cartSlice.ts";
+import { useCartActions, useCartInfo } from "../hooks/useCartStore.ts";
 
 const NavBar = () => {
-  const { cartItems, amount } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
+  const { amount, cartItems } = useCartInfo();
+  const { calculateTotal } = useCartActions();
 
   useEffect(() => {
-    dispatch(calculateTotal());
-  }, [cartItems, dispatch]);
+    calculateTotal();
+  }, [cartItems, calculateTotal]);
 
   return (
     <nav

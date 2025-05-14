@@ -1,4 +1,4 @@
-const cartItems = [
+export const cartItems = [
   {
     id: "recB6qcHPxb62YJ75",
     title: "Vancouver",
