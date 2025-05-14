@@ -1,5 +1,6 @@
 import { useModalActions, useModalInfo } from "../hooks/useModalStore.ts";
 import { useCartActions } from "../hooks/useCartStore.ts";
+import ModalButton from "./ModalButton.tsx";
 
 const Modal = () => {
   const { isOpen } = useModalInfo();
@@ -26,18 +27,16 @@ const Modal = () => {
       >
         <h1 className={`font-semibold`}>정말 삭제하시겠습니까?</h1>
         <div className={`flex justify-center gap-4`}>
-          <button
+          <ModalButton
             onClick={handleClose}
-            className={`px-2 py-1 text-sm bg-gray-400 rounded-xl text-gray-950`}
-          >
-            아니요
-          </button>
-          <button
+            text={"아니요"}
+            style={`px-2 py-1 text-gray-950 bg-gray-300`}
+          />
+          <ModalButton
             onClick={handleClearCart}
-            className={`px-4 py-1 text-sm bg-red-700 rounded-xl text-white`}
-          >
-            네
-          </button>
+            text={"네"}
+            style={`px-4 py-1 text-white bg-red-700`}
+          />
         </div>
       </div>
     </div>
