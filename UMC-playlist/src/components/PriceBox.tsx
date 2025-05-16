@@ -1,25 +1,22 @@
-import { useDispatch, useSelector } from "../hooks/useCustomRedux";
-import { clearCart } from "../slices/cartSlice";
-import { closeModal, openModal } from "../slices/modalSlice";
+import { useCartActions, useCartInfo } from "../hooks/useCartStore";
 import ClearModal from "./ClearModal";
 
 const PriceBox = () => {
-  const { total } = useSelector((state) => state.cart);
-  const { isOpen, modalContent } = useSelector((state) => state.modal);
-
-  const dispatch = useDispatch();
+  const { clearCart, openModal, closeModal } = useCartActions();
+  const { total, isOpen } = useCartInfo();
+  
 
   const handleModal = () => {
-    dispatch(openModal("clear"));
+    openModal();
   };
 
   const handleClearCart = () => {
-    dispatch(clearCart());
-    dispatch(closeModal());
+    clearCart();
+    closeModal();
   };
 
   const handleCloseModal = () => {
-    dispatch(closeModal());
+    closeModal();
   }
 
   return (
@@ -34,7 +31,7 @@ const PriceBox = () => {
         총 가격 : {total} 원
       </div>
 
-      {isOpen && modalContent === "clear" && (
+      {isOpen &&  (
         <ClearModal onConfirm={handleClearCart} onCancle={handleCloseModal}/>
       )}
     </div>
