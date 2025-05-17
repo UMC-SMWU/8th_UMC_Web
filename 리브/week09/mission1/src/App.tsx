@@ -4,6 +4,7 @@ import Cartlist from './components/CartList';
 import Navbar from './components/Navbar'
 import store from './store/store';
 import PriceBox from './components/PriceBox';
+import ConfirmModal from './components/ConfirmModal';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
     <Navbar/>
     <Cartlist/>
     <PriceBox/>
+    <ConfirmModal/>
   </Provider>
   )
 }
