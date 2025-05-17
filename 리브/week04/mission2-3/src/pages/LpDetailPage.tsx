@@ -124,7 +124,7 @@ const LpDetailPage = () => {
 
         {/* LP 이미지 디스크 */}
         <div className="flex justify-center mb-6">
-          <div className="w-64 h-64 rounded-full overflow-hidden relative border-8 border-black">
+          <div className="w-64 h-64 rounded-full  overflow-hidden relative border-8 border-black">
             <img
               src={thumbnail}
               alt="LP 디스크"
