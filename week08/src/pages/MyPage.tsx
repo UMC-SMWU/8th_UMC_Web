@@ -69,7 +69,6 @@ const MyPage = () => {
       {
         onSuccess: () => {
           setIsEditing(false);
-          window.location.reload();
         },
       }
     );

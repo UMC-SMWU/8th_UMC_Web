@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { axiosInstance } from "../apis/axios";
+import useGetMyInfo from "../hooks/queries/useGetMyInfo";
 
 const Navbar = () => {
   const location = useLocation();
@@ -12,6 +13,7 @@ const Navbar = () => {
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { data: myInfo } = useGetMyInfo(accessToken);
 
   useEffect(() => {
     const fetchMyInfo = async () => {
@@ -83,7 +85,7 @@ const Navbar = () => {
             {accessToken && name ? (
               <div className="flex items-center gap-4">
                 <span className="text-sm !text-white font-semibold">
-                  {name}님 반갑습니다.
+                  {myInfo?.data.name}님 반갑습니다.
                 </span>
                 <button
                   onClick={logout}
