@@ -41,7 +41,7 @@ const MovieFilter = ({ onChange }: MovieFilterProps) => {
         <div className={`flex-1 flex flex-col space-y-2`}>
           <Label id={`option`} label={`⚙️ 옵션`} />
           <CheckBox
-            id={`adult`}
+            id={`option`}
             checked={includeAdult}
             label={`성인 콘텐츠 표시`}
             onChange={setIncludeAdult}

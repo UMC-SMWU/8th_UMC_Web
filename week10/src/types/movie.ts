@@ -22,7 +22,7 @@ export type MovieResponse = {
   total_results: number;
 };
 
-export type MovieLanguage = "ko-KR" | "en-US";
+export type MovieLanguage = "ko-KR" | "en-US" | "ja-JP";
 
 export type MovieFilters = {
   query: string;
