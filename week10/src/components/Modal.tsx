@@ -25,6 +25,7 @@ const Modal = () => {
     >
       <div
         className={`bg-white rounded-lg shadow-lg max-w-2xl w-full overflow-hidden`}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* 상단 이미지 배너 */}
         <div className={`relative w-full h-64 overflow-hidden`}>
