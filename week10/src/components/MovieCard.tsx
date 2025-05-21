@@ -1,4 +1,5 @@
 import type { Movie } from "../types/movie.ts";
+import { useModalActions } from "../hooks/useModalStore.ts";
 
 interface MovieCardProps {
   movie: Movie;
@@ -11,9 +12,12 @@ const MovieCard = ({ movie }: MovieCardProps) => {
     ? `${baseImageUrl}${movie.poster_path}`
     : fallbackImageUrl;
 
+  const { openModal } = useModalActions();
+
   return (
     <div
       className={`cursor-pointer overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg`}
+      onClick={() => openModal(movie)}
     >
       <div className={`relative h-80 overflow-hidden`}>
         <img
