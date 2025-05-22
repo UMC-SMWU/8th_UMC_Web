@@ -1,19 +1,18 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { clearCart } from "../slices/cartSlice";
-import { closeModal } from "../slices/modalSlice";
+import { useModalStore } from "../hooks/useModalStore";
+import { useCartStore } from "../hooks/useCartStore";
 
 const Modal = () => {
-  const dispatch = useDispatch();
-  const { isOpen, type } = useSelector((state: RootState) => state.modal);
+  const { isOpen, type, closeModal } = useModalStore();
+  const clearCart = useCartStore((state) => state.actions.clearCart);
+
   if (!isOpen || type !== "CONFIRM_CLEAR_CART") return null;
 
   const handleConfirm = () => {
-    dispatch(clearCart());
-    dispatch(closeModal());
+    clearCart();
+    closeModal();
   };
   const handleCancel = () => {
-    dispatch(closeModal());
+    closeModal();
   };
 
   return (

@@ -1,14 +1,12 @@
-import { useDispatch } from "react-redux";
-import { useSelector } from "../hooks/useCustomRedux";
-import { clearCart } from "../slices/cartSlice";
-import { openModal } from "../slices/modalSlice";
+import { useCartStore } from "../hooks/useCartStore";
+import { useModalStore } from "../hooks/useModalStore";
 
 const PriceBox = () => {
-  const { total } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
+  const total = useCartStore((state) => state.total);
+  const openModal = useModalStore((state) => state.openModal);
 
   const handleResetCartClick = () => {
-    dispatch(openModal("CONFIRM_CLEAR_CART"));
+    openModal("CONFIRM_CLEAR_CART");
   };
   return (
     <div className="p-12 flex justify-between">
