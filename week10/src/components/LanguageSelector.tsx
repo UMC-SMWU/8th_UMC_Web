@@ -18,7 +18,7 @@ const LanguageSelector = ({
 }: LanguageSelectorProps) => {
   return (
     <select 
-        className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        className="border border-gray-300 rounded-md p-3.5 rounded-md p-3 shadow-sm w-full"
         value={value}
         onChange={(e) => onChange(e.target.value)}    
     >

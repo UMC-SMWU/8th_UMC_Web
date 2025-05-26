@@ -2,14 +2,15 @@ import { Movie } from "../types/movie"
 
 interface MovieCardProps {
     movie: Movie;
+    onClick?: () => void;
 }
 
-const MovieCard = ({ movie }:  MovieCardProps) => {
+const MovieCard = ({ movie, onClick }:  MovieCardProps) => {
     const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
     const fallbackImage = 'https://via.placeholder.com/500x750?text=No+Image+Available';
   
     return (
-        <div className="cursor-pointer bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg bg-white">
+        <div onClick={onClick} className="cursor-pointer bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg bg-white">
             <div className="relative h-80 overflow-hidden">
                 <img 
                     src={movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : fallbackImage} 
