@@ -39,6 +39,6 @@
     (자신의 브랜치에 push 후에 github 페이지 들어오면 아마 뜰거에요!)
     
 - PR(Pull Request)시 메세지 제목은 다음과 같이 `[이름/닉네임] ㅇ주차 정리내용 제출.` 라고 적은 후 `create pull request` 버튼을 눌러주세요
-- PR : `base: [master]` <- `compare: [본인 github 아이디]`
+- PR : `base: [main]` <- `compare: [본인 github 아이디]`
 
 ❤️ 본인의 폴더안에 있는 [README.md](http://README.md) 파일은 자유롭게 사용해주세요🙂
