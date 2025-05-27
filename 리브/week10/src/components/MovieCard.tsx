@@ -1,9 +1,8 @@
-import { memo } from "react";
 import { Movie } from "../types/movie";
 
 interface MovieCardProps {
   movie: Movie;
-  onClick?: (movie: Movie) => void; 
+  onClick?: (movie: Movie) => void;
 }
 
 const MovieCard = ({ movie, onClick }: MovieCardProps) => {
@@ -13,7 +12,7 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
   return (
     <div
       className="cursor-pointer overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg"
-      onClick={() => onClick?.(movie)} 
+      onClick={() => onClick?.(movie)}
     >
       <div className="relative h-80 overflow-hidden">
         <img
@@ -40,4 +39,4 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
   );
 };
 
-export default memo(MovieCard);
+export default MovieCard;

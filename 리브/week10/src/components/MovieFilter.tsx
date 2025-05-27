@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { Input } from "../components/Input";
 import { SelectBox } from "../components/SelectBox";
 import LanguageSelector from "./LanguageSelector";
@@ -13,12 +13,18 @@ const MovieFilter = ({ onChange }: MovieFilterProps) => {
   const [includeAdult, setIncludeAdult] = useState<boolean>(false);
   const [language, setLanguage] = useState<MovieLanguage>("ko-KR");
 
-  const handleSubmit = () => {
-    onChange({
+  // useMemo로 filters 객체 메모이제이션
+  const filters = useMemo(
+    () => ({
       query,
       include_adult: includeAdult,
       language,
-    });
+    }),
+    [query, includeAdult, language]
+  );
+
+  const handleSubmit = () => {
+    onChange(filters);
   };
 
   return (
@@ -73,4 +79,4 @@ const MovieFilter = ({ onChange }: MovieFilterProps) => {
   );
 };
 
-export default MovieFilter;
+export default memo(MovieFilter);
